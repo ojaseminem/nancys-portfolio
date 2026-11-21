@@ -190,11 +190,12 @@ h1, h2, h3, p { margin: 0; }
   bottom: 6.6%;
   height: 81%;
   aspect-ratio: 763 / 1999;
-  transform: translateX(-50%) rotateY(var(--ry, 0deg)) rotateX(var(--rx, 0deg));
-  transform-origin: 50% 85%;
-  animation: float 9s var(--ease-io) infinite;
+  /* Pivot at the feet: the figure stays planted on the pedestal and leans/turns from the ground up */
+  transform: translateX(-50%) perspective(1600px) rotateY(var(--ry, 0deg)) rotateX(var(--rx, 0deg)) rotate(var(--rz, 0deg));
+  transform-origin: 50% 100%;
+  animation: breathe-figure 7s var(--ease-io) infinite;
 }
-.layer--char { perspective: 1400px; }
+
 .hero-char__img {
   position: relative;
   width: 100%;
@@ -1077,8 +1078,8 @@ body.is-loading .panels { opacity: 0; transform: translateX(24px); }
 @keyframes orb-pulse { 0%, 100% { opacity: .38; } 50% { opacity: .62; } }
 @keyframes bloom { 0%, 100% { opacity: .55; transform: scale(.94); } 50% { opacity: 1; transform: scale(1.06); } }
 @keyframes rim { 0%, 100% { opacity: .35; } 50% { opacity: .65; } }
-@keyframes float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -0.9%; } }
-@keyframes shadow { 0%, 100% { opacity: 1; scale: 1; } 50% { opacity: .75; scale: .94 1; } }
+@keyframes breathe-figure { 0%, 100% { scale: 1 1; } 50% { scale: 1.004 1.008; } }
+@keyframes shadow { 0%, 100% { opacity: 1; } 50% { opacity: .85; } }
 @keyframes sway { 0%, 100% { transform: translate(0, 0) skewY(0deg); } 50% { transform: translate(-1.5%, 2%) skewY(-2deg); } }
 @keyframes twinkle { 0%, 100% { opacity: .55; transform: scale(.9); } 50% { opacity: 1; transform: scale(1.08); } }
 @keyframes grain { 0% { transform: translate(0, 0); } 25% { transform: translate(-3%, 2%); } 50% { transform: translate(2%, -3%); } 75% { transform: translate(-2%, -1%); } 100% { transform: translate(1%, 3%); } }

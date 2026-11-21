@@ -114,12 +114,20 @@ test('settings toggle turns ambient motion off and persists', async ({ page }) =
 test('mouse parallax moves the scene layers', async ({ page, isMobile }) => {
   test.skip(isMobile);
   await page.goto('/');
-  const before = await page.locator('.layer--char').evaluate((el) => getComputedStyle(el).transform);
+  const charBox = () => page.locator('.hero-char__img').boundingBox();
+  await page.waitForTimeout(3200); // let the entrance animation finish
+  const before = await page.locator('.layer--bg').evaluate((el) => getComputedStyle(el).transform);
+  const feetBefore = await charBox();
   await page.mouse.move(50, 50);
-  await page.mouse.move(1500, 800, { steps: 10 });
-  await page.waitForTimeout(800);
-  const after = await page.locator('.layer--char').evaluate((el) => getComputedStyle(el).transform);
+  await page.mouse.move(page.viewportSize().width - 20, page.viewportSize().height - 20, { steps: 10 });
+  await page.waitForTimeout(2000);
+  const after = await page.locator('.layer--bg').evaluate((el) => getComputedStyle(el).transform);
   expect(after).not.toBe(before);
+  const lean = await page.locator('.hero-char').evaluate((el) => el.style.getPropertyValue('--rz'));
+  expect(parseFloat(lean)).toBeGreaterThan(0.3);
+  // feet stay planted: bottom edge of the figure barely moves vertically
+  const feetAfter = await charBox();
+  expect(Math.abs(feetAfter.y + feetAfter.height - (feetBefore.y + feetBefore.height))).toBeLessThan(20);
 });
 
 test('respects prefers-reduced-motion', async ({ browser }) => {
