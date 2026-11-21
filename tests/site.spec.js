@@ -184,9 +184,11 @@ test('mobile tab bar is reachable', async ({ page, isMobile }) => {
 
 test('has no serious accessibility violations', async ({ page }) => {
   const { default: AxeBuilder } = await import('@axe-core/playwright');
+  // Audit the settled page: with reduced motion there are no fade-ins to catch half-way.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   for (const id of SECTIONS) {
     await page.goto(`/#${id}`);
-    await page.waitForTimeout(900); // let panel entrance animations settle
+    await expect(page.locator('.panels')).toHaveCSS('opacity', '1');
     const results = await new AxeBuilder({ page }).exclude('.scene').analyze();
     const serious = results.violations.filter((v) => ['serious', 'critical'].includes(v.impact));
     expect(serious.map((v) => `${v.id}: ${v.nodes.map((n) => n.target).join(', ')}`), id).toEqual([]);

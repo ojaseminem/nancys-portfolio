@@ -2,6 +2,11 @@
 
 **Live site:** https://ojaseminem.github.io/nancys-portfolio/
 
+[![Site status](https://github.com/ojaseminem/nancys-portfolio/actions/workflows/deploy.yml/badge.svg)](https://github.com/ojaseminem/nancys-portfolio/actions/workflows/deploy.yml)
+[![Total visits](https://rajnandini.goatcounter.com/counter/TOTAL.svg)](https://rajnandini.goatcounter.com)
+
+**Analytics dashboard:** https://rajnandini.goatcounter.com
+
 The portfolio of Rajnandini Chavan, a character artist and illustrator based in Pune, India. It is designed like a fantasy game character screen. Her character stands on a glowing pedestal, and a gilded menu opens her profile, work, skills, story and contact details.
 
 ![Preview](public/og-image.jpg)
@@ -66,18 +71,15 @@ Each click event also notes which section it came from. For example, "artstation
 - **Devices:** phone or computer, screen sizes, browsers and operating systems
 - **Trends:** visits per day, week or month, and which sections are most popular
 
-### Turning analytics on (one time)
+### Status
 
-Tracking stays off until a GoatCounter account is connected:
+Analytics are **switched on** for the GoatCounter site `rajnandini`. Every visit to the live site is counted.
 
-1. Sign up at https://www.goatcounter.com/signup.
-2. Choose a **code** for the site, for example `rajnandini`. Your dashboard will live at `https://rajnandini.goatcounter.com`.
-3. Send that code to Ojas, who adds it to the site. It is a single line near the top of `index.html`: `<meta name="goatcounter" content="rajnandini" />`.
-4. About two minutes after the change, visits start appearing.
+To show the **Total visits** badge at the top of this page, turn on one setting in GoatCounter: **Settings → "Allow adding visitor counts on your website"**. Until then the badge shows as a broken image. The dashboard itself works either way.
 
 ### Viewing analytics
 
-Open your dashboard at `https://YOUR-CODE.goatcounter.com` and sign in.
+Open your dashboard at https://rajnandini.goatcounter.com and sign in.
 
 - The **main chart** shows visits over time. Change the date range at the top.
 - The **Paths** list shows the sections and events above, with counts. Events are marked with an event label.
@@ -138,8 +140,7 @@ Send the changes to Ojas, who maintains the site.
 ## Contact
 
 **Rajnandini Chavan**, Character Artist and Illustrator
-Email: rajnandinichavan612@gmail.com
-Phone: +91 93737 77294
-ArtStation: https://www.artstation.com/rajnandinichavan1
-Behance: https://www.behance.net/rajnandchavan1
-Pune, India · open to on-site roles in Pune and remote work
+
+- Email: rajnandinichavan612@gmail.com
+- ArtStation: https://www.artstation.com/rajnandinichavan1
+- Behance: https://www.behance.net/rajnandchavan1
