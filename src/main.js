@@ -35,7 +35,7 @@ const prefs = {
 /* ------------------------------------------------------------------ */
 const SECTIONS = ['profile', 'works', 'skills', 'about', 'contact'];
 const TITLES = {
-  profile: 'Rajnandini Chavan | Character Artist & Illustrator',
+  profile: 'Rajnandini Chavan | UI/UX Designer & Character Artist',
   works: 'Works | Rajnandini Chavan',
   skills: 'Skills | Rajnandini Chavan',
   about: 'About | Rajnandini Chavan',

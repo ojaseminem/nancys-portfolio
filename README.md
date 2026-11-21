@@ -2,12 +2,12 @@
 
 **Live site:** https://ojaseminem.github.io/nancys-portfolio/
 
-[![Site status](https://github.com/ojaseminem/nancys-portfolio/actions/workflows/deploy.yml/badge.svg)](https://github.com/ojaseminem/nancys-portfolio/actions/workflows/deploy.yml)
+[![Site status](https://github.com/ojaseminem/nancys-portfolio/actions/workflows/deploy.yml/badge.svg?branch=main&event=push)](https://github.com/ojaseminem/nancys-portfolio/actions/workflows/deploy.yml)
 [![Total visits](https://rajnandini.goatcounter.com/counter/TOTAL.svg)](https://rajnandini.goatcounter.com)
 
 **Analytics dashboard:** https://rajnandini.goatcounter.com
 
-The portfolio of Rajnandini Chavan, a character artist and illustrator based in Pune, India. It is designed like a fantasy game character screen. Her character stands on a glowing pedestal, and a gilded menu opens her profile, work, skills, story and contact details.
+The portfolio of Rajnandini Chavan, a UI/UX designer and character artist based in Pune, India. It is designed like a fantasy game character screen. Her character stands on a glowing pedestal, and a gilded menu opens her profile, work, skills, story and contact details.
 
 ![Preview](public/og-image.jpg)
 
@@ -17,10 +17,10 @@ The portfolio of Rajnandini Chavan, a character artist and illustrator based in 
 
 | Section | What's in it |
 | --- | --- |
-| **Profile** | Name, role, availability, discipline, focus, medium, location, work mode, and her four disciplines |
+| **Profile** | Name, role, availability, discipline, what she is looking for, location, and her disciplines (UI design, UX design, iconography, visual design, character, illustration, concept art, costume) |
 | **Works** | Featured artwork with a full-screen viewer, plus links to her full ArtStation and Behance galleries |
-| **Skills** | Core skills with levels, and craft strengths |
-| **About** | Her story, the roles she is looking for, and location preference (Pune on-site or remote) |
+| **Skills** | UI/UX and visual skills, art skills, and craft strengths |
+| **About** | Her story, the roles she is looking for (UI/UX and creative), and location preference (Pune on-site or remote) |
 | **Contact** | Email, phone, ArtStation, Behance and location, with one-tap copy buttons |
 
 Visitors on a computer get a short cinematic intro and a mouse parallax effect, where the scene shifts in depth and the character leans toward the cursor. Phones get a touch-friendly layout with a bottom menu. People who prefer less motion can switch the effects off from the ⚙ menu.
@@ -139,7 +139,7 @@ Send the changes to Ojas, who maintains the site.
 
 ## Contact
 
-**Rajnandini Chavan**, Character Artist and Illustrator
+**Rajnandini Chavan**, UI/UX Designer and Character Artist
 
 - Email: rajnandinichavan612@gmail.com
 - ArtStation: https://www.artstation.com/rajnandinichavan1
