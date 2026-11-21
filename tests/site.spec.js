@@ -181,3 +181,43 @@ test('has no serious accessibility violations', async ({ page }) => {
     expect(serious.map((v) => `${v.id}: ${v.nodes.map((n) => n.target).join(', ')}`), id).toEqual([]);
   }
 });
+
+test('analytics stay off when no site code is set', async ({ page }) => {
+  const hits = [];
+  page.on('request', (r) => r.url().includes('goatcounter') || r.url().includes('gc.zgo.at') ? hits.push(r.url()) : null);
+  await page.goto('/');
+  await page.locator('#tab-works').click();
+  await page.waitForTimeout(300);
+  expect(hits).toEqual([]);
+});
+
+test('analytics record section views and key clicks when switched on', async ({ page }) => {
+  // Serve the page with a site code filled in, and stub the GoatCounter script.
+  await page.route('**/', async (route) => {
+    const res = await route.fetch();
+    const body = (await res.text()).replace('<meta name="goatcounter" content="" />', '<meta name="goatcounter" content="testsite" />');
+    await route.fulfill({ response: res, body });
+  });
+  await page.route('https://gc.zgo.at/count.js', (route) =>
+    route.fulfill({ contentType: 'text/javascript', body: 'window.__gc = []; window.goatcounter.count = (p) => window.__gc.push(p);' }),
+  );
+  await page.goto('/');
+  await page.locator('#tab-works').click();
+  await page.evaluate(() => {
+    window.addEventListener('click', (e) => e.preventDefault());
+    document.querySelector('#works a[href*="artstation"]').click();
+  });
+  await page.locator('#tab-contact').click();
+  await page.getByRole('button', { name: 'Copy email address' }).click();
+  await expect(page.locator('#toast')).toHaveClass(/is-on/);
+
+  const calls = await page.evaluate(() => window.__gc);
+  const paths = calls.map((c) => c.path);
+  expect(paths).toContain('/');
+  expect(paths).toContain('/works');
+  expect(paths).toContain('/contact');
+  expect(calls).toContainEqual(expect.objectContaining({ path: 'click-artstation', event: true }));
+  expect(calls).toContainEqual(expect.objectContaining({ path: 'copy-email', event: true }));
+  const script = await page.locator('script[src="https://gc.zgo.at/count.js"]').getAttribute('data-goatcounter');
+  expect(script).toBe('https://testsite.goatcounter.com/count');
+});

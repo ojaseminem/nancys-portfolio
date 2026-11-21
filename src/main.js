@@ -1,4 +1,5 @@
 import './style.css';
+import { trackView, trackEvent } from './analytics.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -34,11 +35,11 @@ const prefs = {
 /* ------------------------------------------------------------------ */
 const SECTIONS = ['profile', 'works', 'skills', 'about', 'contact'];
 const TITLES = {
-  profile: 'Rajnandini Chavan — Character Artist & Illustrator',
-  works: 'Works — Rajnandini Chavan',
-  skills: 'Skills — Rajnandini Chavan',
-  about: 'About — Rajnandini Chavan',
-  contact: 'Contact — Rajnandini Chavan',
+  profile: 'Rajnandini Chavan | Character Artist & Illustrator',
+  works: 'Works | Rajnandini Chavan',
+  skills: 'Skills | Rajnandini Chavan',
+  about: 'About | Rajnandini Chavan',
+  contact: 'Contact | Rajnandini Chavan',
 };
 const panelsEl = $('#panels');
 let current = null;
@@ -60,6 +61,7 @@ function show(id, { focus = false, scroll = false } = {}) {
     link.tabIndex = active ? 0 : -1;
   });
   document.title = TITLES[id];
+  trackView(id, TITLES[id]);
   panelsEl.scrollTop = 0;
   if (scroll) scrollToPanels();
   if (focus) $(`#${id}`).querySelector('h1, h2')?.focus?.({ preventScroll: true });
@@ -129,7 +131,10 @@ function playIntro() {
   introTimer = setTimeout(endIntro, 2900);
 }
 
-intro.addEventListener('click', endIntro);
+intro.addEventListener('click', () => {
+  if (!intro.classList.contains('is-done')) trackEvent('intro-skipped', 'Intro skipped');
+  endIntro();
+});
 window.addEventListener('keydown', (event) => {
   if (!intro.classList.contains('is-done') && (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ')) endIntro();
 });
@@ -349,6 +354,7 @@ document.addEventListener('keydown', (event) => {
 optMotion.addEventListener('change', () => {
   prefs.motion = optMotion.checked;
   store.set('pref:motion', prefs.motion ? '1' : '0');
+  trackEvent(prefs.motion ? 'setting-motion-on' : 'setting-motion-off', 'Ambient motion toggled');
   applyMotion();
 });
 optParallax.addEventListener('change', () => {
@@ -399,7 +405,8 @@ async function copyText(text) {
 $$('[data-copy]').forEach((btn) => {
   btn.addEventListener('click', async () => {
     const ok = await copyText(btn.dataset.copy);
-    say(ok ? 'Copied to clipboard' : 'Copy failed — select the text instead');
+    say(ok ? 'Copied to clipboard' : 'Copy failed, please select the text instead');
+    trackEvent(btn.dataset.copy.includes('@') ? 'copy-email' : 'copy-phone', btn.getAttribute('aria-label'));
     if (ok) {
       const use = btn.querySelector('use');
       use.setAttribute('href', '#i-check');
@@ -421,6 +428,7 @@ $$('[data-lightbox]').forEach((trigger) => {
     lbImg.alt = trigger.querySelector('img')?.alt || '';
     lbCap.textContent = trigger.dataset.caption || '';
     lightbox.showModal();
+    trackEvent(`view-artwork-${trigger.dataset.lightbox.split('/').pop().split('.')[0]}`, `Opened artwork: ${trigger.querySelector('.feature__title')?.textContent || 'artwork'}`);
   });
 });
 $('.lightbox__close').addEventListener('click', () => lightbox.close());

@@ -80,9 +80,10 @@ def character():
     w, h = c.size
     save_webp(c.resize((round(w * 1200 / h), 1200), Image.LANCZOS), "character-1200.webp", 84)
 
-    # Portrait for the roster / favicon-ish avatar: crop the head.
+    # Portrait for the roster avatar: square crop centred on the face
+    # (nose at roughly x=503 in master space) so it sits centred in the circle.
     src = Image.open(SRC / "character.webp").convert("RGBA")
-    head = src.crop((410, 10, 730, 330))
+    head = src.crop((353, 0, 653, 300))
     bg = Image.new("RGBA", head.size, (58, 36, 72, 255))
     bg.alpha_composite(head)
     save_webp(bg.convert("RGB").resize((256, 256), Image.LANCZOS), "portrait.webp", 86)
