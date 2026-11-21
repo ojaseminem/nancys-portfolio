@@ -5,6 +5,10 @@ const SECTIONS = ['profile', 'works', 'skills', 'about', 'contact'];
 // Skip the cinematic intro for most tests.
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => sessionStorage.setItem('intro:seen', '1'));
+  // Never send real analytics from tests.
+  await page.route('https://gc.zgo.at/**', (route) =>
+    route.fulfill({ contentType: 'text/javascript', body: 'window.__gc = []; window.goatcounter.count = (p) => window.__gc.push(p);' }),
+  );
 });
 
 test('loads without errors and shows the profile', async ({ page }) => {
@@ -117,17 +121,24 @@ test('mouse parallax moves the scene layers', async ({ page, isMobile }) => {
   const charBox = () => page.locator('.hero-char__img').boundingBox();
   await page.waitForTimeout(3200); // let the entrance animation finish
   const before = await page.locator('.layer--bg').evaluate((el) => getComputedStyle(el).transform);
+  const podium = () => page.locator('.podium').boundingBox();
   const feetBefore = await charBox();
+  const podBefore = await podium();
   await page.mouse.move(50, 50);
   await page.mouse.move(page.viewportSize().width - 20, page.viewportSize().height - 20, { steps: 10 });
   await page.waitForTimeout(2000);
   const after = await page.locator('.layer--bg').evaluate((el) => getComputedStyle(el).transform);
   expect(after).not.toBe(before);
-  const lean = await page.locator('.hero-char').evaluate((el) => el.style.getPropertyValue('--rz'));
-  expect(parseFloat(lean)).toBeGreaterThan(0.3);
-  // feet stay planted: bottom edge of the figure barely moves vertically
+  // she stays grounded: the gap between her feet and the podium does not change
   const feetAfter = await charBox();
-  expect(Math.abs(feetAfter.y + feetAfter.height - (feetBefore.y + feetBefore.height))).toBeLessThan(20);
+  const podAfter = await podium();
+  expect(Math.abs(podAfter.x - podBefore.x)).toBeGreaterThan(5); // the podium really moved
+  const gapBefore = feetBefore.y + feetBefore.height - podBefore.y;
+  const gapAfter = feetAfter.y + feetAfter.height - podAfter.y;
+  expect(Math.abs(gapAfter - gapBefore)).toBeLessThan(4);
+  const centreBefore = feetBefore.x + feetBefore.width / 2 - podBefore.x;
+  const centreAfter = feetAfter.x + feetAfter.width / 2 - podAfter.x;
+  expect(Math.abs(centreAfter - centreBefore)).toBeLessThan(6);
 });
 
 test('respects prefers-reduced-motion', async ({ browser }) => {
@@ -183,24 +194,31 @@ test('has no serious accessibility violations', async ({ page }) => {
 });
 
 test('analytics stay off when no site code is set', async ({ page }) => {
+  await page.route('**/', async (route) => {
+    const res = await route.fetch();
+    const body = (await res.text()).replace(/<meta name="goatcounter" content="[^"]*" \/>/, '<meta name="goatcounter" content="" />');
+    await route.fulfill({ response: res, body });
+  });
   const hits = [];
-  page.on('request', (r) => r.url().includes('goatcounter') || r.url().includes('gc.zgo.at') ? hits.push(r.url()) : null);
+  page.on('request', (r) => (r.url().includes('gc.zgo.at') ? hits.push(r.url()) : null));
   await page.goto('/');
   await page.locator('#tab-works').click();
   await page.waitForTimeout(300);
   expect(hits).toEqual([]);
 });
 
+test('analytics point at the rajnandini dashboard', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('script[src="https://gc.zgo.at/count.js"]')).toHaveAttribute('data-goatcounter', 'https://rajnandini.goatcounter.com/count');
+});
+
 test('analytics record section views and key clicks when switched on', async ({ page }) => {
   // Serve the page with a site code filled in, and stub the GoatCounter script.
   await page.route('**/', async (route) => {
     const res = await route.fetch();
-    const body = (await res.text()).replace('<meta name="goatcounter" content="" />', '<meta name="goatcounter" content="testsite" />');
+    const body = (await res.text()).replace(/<meta name="goatcounter" content="[^"]*" \/>/, '<meta name="goatcounter" content="testsite" />');
     await route.fulfill({ response: res, body });
   });
-  await page.route('https://gc.zgo.at/count.js', (route) =>
-    route.fulfill({ contentType: 'text/javascript', body: 'window.__gc = []; window.goatcounter.count = (p) => window.__gc.push(p);' }),
-  );
   await page.goto('/');
   await page.locator('#tab-works').click();
   await page.evaluate(() => {

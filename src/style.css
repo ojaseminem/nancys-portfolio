@@ -190,12 +190,19 @@ h1, h2, h3, p { margin: 0; }
   bottom: 6.6%;
   height: 81%;
   aspect-ratio: 763 / 1999;
-  /* Pivot at the feet: the figure stays planted on the pedestal and leans/turns from the ground up */
-  transform: translateX(-50%) perspective(1600px) rotateY(var(--ry, 0deg)) rotateX(var(--rx, 0deg)) rotate(var(--rz, 0deg));
+  /* She and the podium share one parallax layer, so she stays grounded; a slight turn pivots at the feet */
+  transform: translateX(-50%) perspective(1600px) rotateY(var(--ry, 0deg));
   transform-origin: 50% 100%;
   animation: breathe-figure 7s var(--ease-io) infinite;
 }
 
+.podium {
+  position: absolute;
+  left: 7.5%;
+  top: 86.222%;
+  width: 75%;
+  height: 13.778%;
+}
 .hero-char__img {
   position: relative;
   width: 100%;

@@ -279,10 +279,8 @@ function frame(now) {
     el.style.setProperty('--px', `${(-pointer.x * depth * w).toFixed(2)}px`);
     el.style.setProperty('--py', `${(-pointer.y * depth * w * 0.6).toFixed(2)}px`);
   }
-  // Lean from the feet: turn toward the cursor and sway the upper body, feet stay put.
-  heroChar.style.setProperty('--ry', `${(pointer.x * 7).toFixed(3)}deg`);
-  heroChar.style.setProperty('--rx', `${(pointer.y * 2.5).toFixed(3)}deg`);
-  heroChar.style.setProperty('--rz', `${(pointer.x * 1.1).toFixed(3)}deg`);
+  // She moves with her podium (same layer); a slight turn toward the cursor pivots at the feet.
+  heroChar.style.setProperty('--ry', `${(pointer.x * 3).toFixed(3)}deg`);
 
   drawMotes(now, dt);
 
@@ -307,8 +305,6 @@ function applyMotion() {
       el.style.setProperty('--py', '0px');
     }
     heroChar.style.setProperty('--ry', '0deg');
-    heroChar.style.setProperty('--rx', '0deg');
-    heroChar.style.setProperty('--rz', '0deg');
     drawMotes(performance.now(), 0);
   }
 }

@@ -71,6 +71,30 @@ def glow():
     col *= np.array([1.05, 0.92, 1.0], dtype=np.float32)
     col_img = Image.fromarray((np.clip(col, 0, 1) * 255).astype(np.uint8), "RGB")
     save_webp(col_img.resize((1280, 720), Image.LANCZOS), "light-column.webp", 80)
+    return col_img
+
+
+def podium(light):
+    """Cut the painted pedestal out of the background as its own layer.
+
+    It moves together with the character in the parallax, so she always stays
+    grounded on it. The light column is baked in (at its average strength) so
+    the cut-out matches the lit background around it. Edges are feathered and
+    slightly oversized so the painted pedestal underneath never peeks out.
+    """
+    bg = np.asarray(Image.open(SRC / "background.webp").convert("RGB")).astype(np.float32) / 255.0
+    li = np.asarray(light).astype(np.float32) / 255.0 * 0.85
+    lit = 1 - (1 - bg) * (1 - li)  # screen blend
+    h, w = lit.shape[:2]
+    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+    # The pedestal drum is the top of a wide ellipse centred below the frame.
+    cx, cy, a, b = 900.0, 1200.0, 735.0, 212.0
+    d = np.sqrt(((xx - cx) / a) ** 2 + ((yy - cy) / b) ** 2)
+    alpha = np.clip((1.0 - d) / 0.07, 0, 1)
+    rgba = np.dstack([lit, alpha])
+    box = (150, 970, 1650, 1125)  # 1500 x 155 in master space
+    img = Image.fromarray((rgba * 255).astype(np.uint8), "RGBA").crop(box)
+    save_webp(img, "podium.webp", 84)
 
 
 def character():
@@ -98,5 +122,6 @@ def character():
 if __name__ == "__main__":
     print("building assets ->", OUT.relative_to(ROOT))
     background()
-    glow()
+    light = glow()
+    podium(light)
     character()
