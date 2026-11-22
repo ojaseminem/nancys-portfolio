@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "source-art"
 OUT = ROOT / "public" / "assets"
 OUT.mkdir(parents=True, exist_ok=True)
+(OUT / "works").mkdir(exist_ok=True)
 
 
 def save_webp(img, name, quality=82):
@@ -119,9 +120,67 @@ def character():
     save_webp(rim, "character-rim.webp", 70)
 
 
+def content_box(img, bg, tol=18, pad=0.04, exclude_below=None):
+    """Bounding box of everything that differs from the flat backdrop colour, padded."""
+    a = np.asarray(img.convert("RGB")).astype(int)
+    if exclude_below:
+        a = a[:exclude_below]
+    mask = (np.abs(a - np.array(bg)).max(axis=2) > tol)
+    ys, xs = np.where(mask)
+    x0, x1, y0, y1 = xs.min(), xs.max(), ys.min(), ys.max()
+    px, py = int((x1 - x0) * pad), int((y1 - y0) * pad)
+    return (max(0, x0 - px), max(0, y0 - py), min(img.width, x1 + px), min(img.height, y1 + py))
+
+
+def fit(img, longest):
+    w, h = img.size
+    s = longest / max(w, h)
+    return img if s >= 1 else img.resize((round(w * s), round(h * s)), Image.LANCZOS)
+
+
+def works():
+    """Portfolio pieces: trimmed, straightened, exported as full-size + card thumbnail."""
+    W = SRC / "works"
+    out = {}
+    # Swan lotus relief
+    swan_src = Image.open(W / "swan-final.webp").convert("RGB")
+    sb = content_box(swan_src, (36, 36, 36), pad=0.0)
+    cx, cy = (sb[0] + sb[2]) // 2, (sb[1] + sb[3]) // 2
+    hh = int((sb[3] - sb[1]) * 0.56)  # roomy portrait frame around the relief
+    hw = int(hh * 0.75)
+    swan = swan_src.crop((cx - hw, max(0, cy - hh), cx + hw, min(swan_src.height, cy + hh)))
+    out["swan-final"] = swan
+    bd = Image.open(W / "swan-breakdown.webp").convert("RGB")
+    bb = content_box(bd, (36, 36, 36), pad=0.03, exclude_below=870)
+    bd = bd.crop((bb[0], bb[1], bb[2], min(bb[3], 872)))  # drop the "Breakdown" label
+    out["swan-breakdown"] = bd
+    # Ursula: the render was supplied rotated 90 degrees anticlockwise
+    urs = Image.open(W / "ursula-render-raw.webp").convert("RGB").rotate(-90, expand=True)
+    out["ursula-render"] = urs
+    topo = Image.open(W / "ursula-topology.webp").convert("RGB")
+    out["ursula-topology"] = topo.crop(content_box(topo, (35, 35, 35), pad=0.015))
+    sculpt = Image.open(W / "ursula-sculpt.png").convert("RGB")
+    out["ursula-sculpt"] = sculpt.crop(content_box(sculpt, (48, 48, 48), pad=0.015))
+
+    for name, img in out.items():
+        save_webp(fit(img, 1800), f"works/{name}.webp", 84)
+
+    # Card thumbnails, portrait 3:5, framed on the subject
+    def thumb(img, box, name):
+        t = img.crop(box).resize((300, 500), Image.LANCZOS)
+        save_webp(t, f"works/{name}-thumb.webp", 82)
+
+    th = int((sb[3] - sb[1]) * 1.08)
+    tw = int(th * 0.6)
+    thumb(swan_src, (cx - tw // 2, cy - th // 2, cx + tw // 2, cy + th // 2), "swan")
+    uw, uh = urs.size  # 1080 x 1920
+    thumb(urs, (60, 260, 60 + 900, 260 + 1500), "ursula")
+
+
 if __name__ == "__main__":
     print("building assets ->", OUT.relative_to(ROOT))
     background()
     light = glow()
     podium(light)
     character()
+    works()

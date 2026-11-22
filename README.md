@@ -18,7 +18,7 @@ The portfolio of Rajnandini Chavan, a UI/UX designer and character artist based 
 | Section | What's in it |
 | --- | --- |
 | **Profile** | Name, role, availability, discipline, what she is looking for, location, and her disciplines (UI design, UX design, iconography, visual design, character, illustration, concept art, costume) |
-| **Works** | Featured artwork with a full-screen viewer, plus links to her full ArtStation and Behance galleries |
+| **Works** | Three projects (Ursula, Swan & Lotus Relief, Vaishnavi) shown as matching cards. Each opens a full-screen viewer with the final piece and its process images, and links to the project on ArtStation |
 | **Skills** | UI/UX and visual skills, art skills, and craft strengths |
 | **About** | Her story, the roles she is looking for (UI/UX and creative), and location preference (Pune on-site or remote) |
 | **Contact** | Email, phone, ArtStation, Behance and location, with one-tap copy buttons |
@@ -58,7 +58,7 @@ The site has visitor analytics built in using **[GoatCounter](https://www.goatco
 | `click-phone` | Tapped the phone number to call |
 | `copy-email` | Copied the email address |
 | `copy-phone` | Copied the phone number |
-| `view-artwork-…` | Opened an artwork in the full-screen viewer |
+| `view-project-…` | Opened a project in the full-screen viewer (for example `view-project-ursula`) |
 | `intro-skipped` | Skipped the intro |
 | `setting-motion-off` / `setting-motion-on` | Turned the ambient motion off or on |
 
@@ -127,7 +127,7 @@ A full publish takes about two minutes.
 
 Things that are easy to change:
 
-- New artwork for the Works section (send the image file, a title and a one-line description)
+- New projects for the Works section (send the final image, any process or breakdown images, a title, a one-line description and the ArtStation link)
 - Profile details, skills, the About text and what roles she is looking for
 - Contact details and links
 - A résumé PDF download button

@@ -32,7 +32,7 @@ test('all images load', async ({ page }) => {
   await page.goto('/');
   await page.waitForLoadState('networkidle');
   await page.locator('#tab-works').click();
-  await page.locator('.feature img').scrollIntoViewIfNeeded();
+  for (const img of await page.locator('.work__media img').all()) await img.scrollIntoViewIfNeeded();
   await page.waitForFunction(() => [...document.images].filter((i) => !i.closest('[hidden]') && !i.closest('dialog')).every((i) => i.complete));
   const broken = await page.$$eval('img', (imgs) =>
     imgs.filter((i) => i.getAttribute('src') && !(i.complete && i.naturalWidth > 0) && !i.closest('dialog') && !i.closest('[hidden]')).map((i) => i.src),
@@ -84,14 +84,43 @@ test('copy button copies the email', async ({ page, context, browserName }) => {
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('rajnandinichavan612@gmail.com');
 });
 
-test('artwork opens in the lightbox and closes with Escape', async ({ page }) => {
+test('project viewer opens, pages through images and closes', async ({ page }) => {
   await page.goto('/#works');
-  await page.locator('.feature').click();
-  const dialog = page.locator('#lightbox');
-  await expect(dialog).toBeVisible();
-  await expect(dialog.locator('img')).toHaveAttribute('src', /character-2000\.webp/);
+  const cards = page.locator('.work');
+  await expect(cards).toHaveCount(3);
+  await page.locator('.work[data-project="ursula"] .work__view').click();
+  const viewer = page.locator('#viewer');
+  await expect(viewer).toBeVisible();
+  await expect(page.locator('#viewerTitle')).toHaveText('Ursula');
+  await expect(page.locator('#viewerImg')).toHaveAttribute('src', /ursula-render\.webp/);
+  await expect(page.locator('#viewerLink')).toHaveAttribute('href', 'https://www.artstation.com/artwork/Z0P43x');
+  await expect(page.locator('#viewerCount')).toHaveText('1 / 3');
+  await page.locator('#viewerThumbs button').nth(1).click();
+  await expect(page.locator('#viewerImg')).toHaveAttribute('src', /ursula-sculpt\.webp/);
+  await page.keyboard.press('ArrowRight');
+  await expect(page.locator('#viewerImg')).toHaveAttribute('src', /ursula-topology\.webp/);
+  await page.keyboard.press('ArrowRight');
+  await expect(page.locator('#viewerCount')).toHaveText('1 / 3');
+  // every image in the set actually loads
+  for (let i = 0; i < 3; i++) {
+    await expect.poll(() => page.locator('#viewerImg').evaluate((img) => img.complete && img.naturalWidth > 0)).toBe(true);
+    await page.keyboard.press('ArrowRight');
+  }
   await page.keyboard.press('Escape');
-  await expect(dialog).toBeHidden();
+  await expect(viewer).toBeHidden();
+
+  await page.locator('.work[data-project="swan"] .work__media').click();
+  await expect(page.locator('#viewerTitle')).toHaveText('Swan & Lotus Relief');
+  await expect(page.locator('#viewerLink')).toHaveAttribute('href', 'https://www.artstation.com/artwork/AoQdyW');
+  await expect(page.locator('#viewerThumbs button')).toHaveCount(2);
+  await page.locator('#viewerThumbs button').nth(1).click();
+  await expect(page.locator('#viewerImg')).toHaveAttribute('src', /swan-breakdown\.webp/);
+});
+
+test('works cards link to the right ArtStation pages', async ({ page }) => {
+  await page.goto('/#works');
+  await expect(page.locator('.work[data-project="ursula"] .work__ext')).toHaveAttribute('href', 'https://www.artstation.com/artwork/Z0P43x');
+  await expect(page.locator('.work[data-project="swan"] .work__ext')).toHaveAttribute('href', 'https://www.artstation.com/artwork/AoQdyW');
 });
 
 test('keyboard arrows move between tabs', async ({ page, isMobile }) => {

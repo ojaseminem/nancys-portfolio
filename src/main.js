@@ -1,5 +1,6 @@
 import './style.css';
 import { trackView, trackEvent } from './analytics.js';
+import { PROJECTS } from './works.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -412,22 +413,69 @@ $$('[data-copy]').forEach((btn) => {
 });
 
 /* ------------------------------------------------------------------ */
-/* Lightbox                                                            */
+/* Project viewer                                                            */
 /* ------------------------------------------------------------------ */
-const lightbox = $('#lightbox');
-const lbImg = $('img', lightbox);
-const lbCap = $('figcaption', lightbox);
+const viewer = $('#viewer');
+const vImg = $('#viewerImg');
+const vThumbs = $('#viewerThumbs');
+let vProject = null;
+let vIndex = 0;
 
-$$('[data-lightbox]').forEach((trigger) => {
-  trigger.addEventListener('click', () => {
-    lbImg.src = trigger.dataset.lightbox;
-    lbImg.alt = trigger.querySelector('img')?.alt || '';
-    lbCap.textContent = trigger.dataset.caption || '';
-    lightbox.showModal();
-    trackEvent(`view-artwork-${trigger.dataset.lightbox.split('/').pop().split('.')[0]}`, `Opened artwork: ${trigger.querySelector('.feature__title')?.textContent || 'artwork'}`);
-  });
+function showImage(i) {
+  const imgs = vProject.images;
+  vIndex = (i + imgs.length) % imgs.length;
+  const item = imgs[vIndex];
+  vImg.src = item.src;
+  vImg.alt = item.alt;
+  $('#viewerCaption').textContent = item.caption;
+  $('#viewerCount').textContent = imgs.length > 1 ? `${vIndex + 1} / ${imgs.length}` : '';
+  $$('button', vThumbs).forEach((b, n) => b.setAttribute('aria-current', String(n === vIndex)));
+  // warm the next image
+  if (imgs.length > 1) new Image().src = imgs[(vIndex + 1) % imgs.length].src;
+}
+
+function openProject(id) {
+  vProject = PROJECTS[id];
+  if (!vProject) return;
+  $('#viewerTitle').textContent = vProject.title;
+  $('#viewerTag').textContent = vProject.tag;
+  $('#viewerLink').href = vProject.link;
+  viewer.classList.toggle('is-single', vProject.images.length < 2);
+  vThumbs.replaceChildren(...vProject.images.map((item, n) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'viewer__thumb';
+    b.setAttribute('aria-label', `Image ${n + 1}: ${item.caption.split('.')[0]}`);
+    const t = document.createElement('img');
+    t.src = item.src;
+    t.alt = '';
+    t.loading = 'lazy';
+    b.append(t);
+    b.addEventListener('click', () => showImage(n));
+    return b;
+  }));
+  showImage(0);
+  viewer.showModal();
+  trackEvent(`view-project-${id}`, `Opened project: ${vProject.title}`);
+}
+
+$$('[data-open]').forEach((btn) => btn.addEventListener('click', () => openProject(btn.dataset.open)));
+$('.viewer__close').addEventListener('click', () => viewer.close());
+$('.viewer__nav--prev').addEventListener('click', () => showImage(vIndex - 1));
+$('.viewer__nav--next').addEventListener('click', () => showImage(vIndex + 1));
+viewer.addEventListener('keydown', (event) => {
+  if (event.key === 'ArrowLeft') showImage(vIndex - 1);
+  if (event.key === 'ArrowRight') showImage(vIndex + 1);
 });
-$('.lightbox__close').addEventListener('click', () => lightbox.close());
-lightbox.addEventListener('click', (event) => {
-  if (event.target === lightbox || event.target.tagName === 'FIGURE') lightbox.close();
+viewer.addEventListener('click', (event) => {
+  if (event.target === viewer || event.target.classList.contains('viewer__stage')) viewer.close();
+});
+// swipe on touch screens
+let touchX = null;
+vImg.addEventListener('touchstart', (e) => { touchX = e.touches[0].clientX; }, { passive: true });
+vImg.addEventListener('touchend', (e) => {
+  if (touchX === null) return;
+  const dx = e.changedTouches[0].clientX - touchX;
+  if (Math.abs(dx) > 40) showImage(vIndex + (dx < 0 ? 1 : -1));
+  touchX = null;
 });

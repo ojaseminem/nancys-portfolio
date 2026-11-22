@@ -286,19 +286,57 @@
     <!-- WORKS -->
     <section class="panel" id="works" role="tabpanel" aria-labelledby="tab-works" hidden>
       <header class="panel__head">
-        <p class="kicker">Selected work</p>
+        <p class="kicker">Selected work · 3 projects</p>
         <h2 class="panel__title">Works</h2>
       </header>
 
-      <button class="feature" type="button" data-lightbox="./assets/character-2000.webp" data-caption="Vaishnavi, character concept. Costume built on hand-woven tribal borders, cargo silhouettes and a sleeveless layered top.">
-        <span class="feature__media"><img src="./assets/character-1200.webp" alt="Vaishnavi, a full-body character design: a barefoot young woman with long braids in a layered cream crop top over a purple knit, and wide cream cargo trousers with woven geometric borders." loading="lazy" /></span>
-        <span class="feature__body">
-          <span class="feature__tag">Character design</span>
-          <span class="feature__title">Vaishnavi</span>
-          <span class="feature__desc">A wanderer between dream-worlds. Costume pulls from woven tribal borders and utility cargo cuts.</span>
-          <span class="feature__view">View full piece <svg><use href="#i-arrow" /></svg></span>
-        </span>
-      </button>
+      <ul class="works-list">
+        <li class="work" data-project="ursula">
+          <button class="work__media" type="button" data-open="ursula" aria-label="View project: Ursula, 3 images">
+            <img src="./assets/works/ursula-thumb.webp" alt="" loading="lazy" width="300" height="500" />
+            <span class="work__count">3 images</span>
+          </button>
+          <div class="work__body">
+            <span class="work__tag">3D character · Fan art</span>
+            <h3 class="work__title">Ursula</h3>
+            <p class="work__desc">A stylised take on the sea witch. Sculpted, retopologised for clean deformation, then lit and rendered in an underwater scene.</p>
+            <div class="work__actions">
+              <button class="work__view" type="button" data-open="ursula">View project <svg><use href="#i-arrow" /></svg></button>
+              <a class="work__ext" href="https://www.artstation.com/artwork/Z0P43x" target="_blank" rel="noopener" aria-label="Ursula on ArtStation (opens in a new tab)"><svg><use href="#i-artstation" /></svg><svg><use href="#i-ext" /></svg></a>
+            </div>
+          </div>
+        </li>
+        <li class="work" data-project="swan">
+          <button class="work__media" type="button" data-open="swan" aria-label="View project: Swan and Lotus Relief, 2 images">
+            <img src="./assets/works/swan-thumb.webp" alt="" loading="lazy" width="300" height="500" />
+            <span class="work__count">2 images</span>
+          </button>
+          <div class="work__body">
+            <span class="work__tag">3D prop · Sculpt &amp; texture</span>
+            <h3 class="work__title">Swan &amp; Lotus Relief</h3>
+            <p class="work__desc">A carved stone panel of twin swans over a lotus. Breakdown from clean sculpt through moss and wear to the glowing final.</p>
+            <div class="work__actions">
+              <button class="work__view" type="button" data-open="swan">View project <svg><use href="#i-arrow" /></svg></button>
+              <a class="work__ext" href="https://www.artstation.com/artwork/AoQdyW" target="_blank" rel="noopener" aria-label="Swan and Lotus Relief on ArtStation (opens in a new tab)"><svg><use href="#i-artstation" /></svg><svg><use href="#i-ext" /></svg></a>
+            </div>
+          </div>
+        </li>
+        <li class="work" data-project="vaishnavi">
+          <button class="work__media" type="button" data-open="vaishnavi" aria-label="View project: Vaishnavi, 1 image">
+            <img src="./assets/character-1200.webp" alt="" loading="lazy" />
+            <span class="work__count">1 image</span>
+          </button>
+          <div class="work__body">
+            <span class="work__tag">2D character · Costume design</span>
+            <h3 class="work__title">Vaishnavi</h3>
+            <p class="work__desc">A wanderer between dream-worlds. Costume pulls from woven tribal borders and utility cargo cuts.</p>
+            <div class="work__actions">
+              <button class="work__view" type="button" data-open="vaishnavi">View project <svg><use href="#i-arrow" /></svg></button>
+              <a class="work__ext" href="https://www.artstation.com/rajnandinichavan1" target="_blank" rel="noopener" aria-label="More on ArtStation (opens in a new tab)"><svg><use href="#i-artstation" /></svg><svg><use href="#i-ext" /></svg></a>
+            </div>
+          </div>
+        </li>
+      </ul>
 
       <div class="gallery-links">
         <a class="gl" href="https://www.artstation.com/rajnandinichavan1" target="_blank" rel="noopener">
@@ -334,6 +372,7 @@
         <li class="skill"><div class="skill__row"><span>Character design</span><span class="skill__lv">Core</span></div><div class="bar"><span class="bar__fill" style="--v:.95"></span></div></li>
         <li class="skill"><div class="skill__row"><span>Digital painting &amp; illustration</span><span class="skill__lv">Core</span></div><div class="bar"><span class="bar__fill" style="--v:.9"></span></div></li>
         <li class="skill"><div class="skill__row"><span>Concept art &amp; costume design</span><span class="skill__lv">Strong</span></div><div class="bar"><span class="bar__fill" style="--v:.82"></span></div></li>
+        <li class="skill"><div class="skill__row"><span>3D sculpting, retopology &amp; texturing</span><span class="skill__lv">Strong</span></div><div class="bar"><span class="bar__fill" style="--v:.8"></span></div></li>
       </ul>
 
       <h3 class="divider"><span>Craft</span></h3>
@@ -347,6 +386,8 @@
         <li>Anatomy &amp; gesture</li>
         <li>Pattern &amp; textile detail</li>
         <li>Silhouette &amp; shape language</li>
+        <li>Blender</li>
+        <li>ZBrush</li>
       </ul>
     </section>
 
@@ -419,12 +460,26 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <dialog class="lightbox" id="lightbox" aria-label="Artwork viewer">
-    <button class="lightbox__close" type="button" aria-label="Close"><svg><use href="#i-close" /></svg></button>
-    <figure>
-      <img alt="" />
-      <figcaption></figcaption>
+  <dialog class="viewer" id="viewer" aria-labelledby="viewerTitle">
+    <header class="viewer__head">
+      <div>
+        <p class="viewer__tag" id="viewerTag"></p>
+        <h2 class="viewer__title" id="viewerTitle"></h2>
+      </div>
+      <div class="viewer__tools">
+        <a class="viewer__ext" id="viewerLink" href="#" target="_blank" rel="noopener"><svg><use href="#i-artstation" /></svg><span>View on ArtStation</span><svg><use href="#i-ext" /></svg></a>
+        <button class="viewer__close" type="button" aria-label="Close"><svg><use href="#i-close" /></svg></button>
+      </div>
+    </header>
+    <figure class="viewer__stage">
+      <button class="viewer__nav viewer__nav--prev" type="button" aria-label="Previous image"><svg><use href="#i-arrow" /></svg></button>
+      <img id="viewerImg" alt="" />
+      <button class="viewer__nav viewer__nav--next" type="button" aria-label="Next image"><svg><use href="#i-arrow" /></svg></button>
     </figure>
+    <footer class="viewer__foot">
+      <p class="viewer__caption"><span class="viewer__count" id="viewerCount"></span><span id="viewerCaption"></span></p>
+      <div class="viewer__thumbs" id="viewerThumbs"></div>
+    </footer>
   </dialog>
 
   <noscript><style>.intro{display:none}.panel[hidden]{display:block!important}body.is-loading .ui-hide{opacity:1}</style></noscript>
