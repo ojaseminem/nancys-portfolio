@@ -162,8 +162,39 @@ def works():
     sculpt = Image.open(W / "ursula-sculpt.png").convert("RGB")
     out["ursula-sculpt"] = sculpt.crop(content_box(sculpt, (48, 48, 48), pad=0.015))
 
+    out["ursula-throne"] = Image.open(W / "ursula-throne.webp").convert("RGB")
+
+    # Meta Quest 3 campaign: presentation slides kept whole, renders also cut into tiles
+    meta = Image.open(W / "meta-final-renders.webp").convert("RGB")
+    out["meta-final-renders"] = meta
+    out["meta-intro-wip"] = Image.open(W / "meta-intro-wip.webp").convert("RGB")
+    out["meta-room-wip"] = Image.open(W / "meta-room-wip.webp").convert("RGB")
+    tiles = {
+        "meta-front": (442, 90, 948, 375),
+        "meta-side": (971, 90, 1477, 375),
+        "meta-explode-a": (180, 398, 687, 682),
+        "meta-explode-b": (707, 398, 1213, 682),
+        "meta-lenses": (1233, 706, 1739, 989),
+    }
+    for name, box in tiles.items():
+        save_webp(meta.crop(box), f"works/{name}.webp", 86)
+
     for name, img in out.items():
         save_webp(fit(img, 1800), f"works/{name}.webp", 84)
+
+    # Blossom lamp: web-ready video + the last frame (full model) as a still
+    import subprocess
+    vid_src, vid_out = W / "blossom-lamp.mp4", OUT / "works" / "blossom-lamp.mp4"
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(vid_src), "-c:v", "libx264", "-crf", "23",
+                    "-preset", "slow", "-pix_fmt", "yuv420p", "-movflags", "+faststart",
+                    "-c:a", "aac", "-b:a", "96k", str(vid_out)], check=True)
+    last = OUT / "works" / "_last.png"
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-sseof", "-0.4", "-i", str(vid_src), "-update", "1",
+                    str(last)], check=True)
+    lamp = Image.open(last).convert("RGB")
+    last.unlink()
+    save_webp(lamp, "works/blossom-lamp.webp", 88)
+    print(f"  works/blossom-lamp.mp4         {vid_out.stat().st_size // 1024} KB")
 
     # Card thumbnails, portrait 3:5, framed on the subject
     def thumb(img, box, name):
@@ -175,6 +206,20 @@ def works():
     thumb(swan_src, (cx - tw // 2, cy - th // 2, cx + tw // 2, cy + th // 2), "swan")
     uw, uh = urs.size  # 1080 x 1920
     thumb(urs, (60, 260, 60 + 900, 260 + 1500), "ursula")
+    lw, lh = lamp.size  # 478 x 850
+    th = int(lw / 0.6)
+    thumb(lamp, (0, (lh - th) // 2, lw, (lh + th) // 2), "blossom-lamp")
+
+    # Hover "process" thumbnails: the same card flips to an earlier stage
+    sculpt = out["ursula-sculpt"]
+    sw2, sh2 = sculpt.size  # T-pose sits in the right third
+    pw = int(sh2 * 0.6)
+    thumb(sculpt, (sw2 - pw - int(sw2 * 0.04), 0, sw2 - int(sw2 * 0.04), sh2), "ursula-process")
+    bdw, bdh = bd.size  # first of four stages = bare sculpt
+    stage = bd.crop((0, 0, bdw // 4, bdh))
+    gw, gh = stage.size
+    tw2 = int(gh * 0.6)
+    thumb(stage, ((gw - tw2) // 2, 0, (gw + tw2) // 2, gh), "swan-process")
 
 
 if __name__ == "__main__":

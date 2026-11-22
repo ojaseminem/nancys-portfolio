@@ -1,6 +1,6 @@
 import './style.css';
 import { trackView, trackEvent } from './analytics.js';
-import { PROJECTS } from './works.js';
+import { PROJECTS, FILTERS, mediaSummary } from './works.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -416,66 +416,180 @@ $$('[data-copy]').forEach((btn) => {
 /* Project viewer                                                            */
 /* ------------------------------------------------------------------ */
 const viewer = $('#viewer');
-const vImg = $('#viewerImg');
+const vMedia = $('#viewerMedia');
 const vThumbs = $('#viewerThumbs');
+const byId = Object.fromEntries(PROJECTS.map((p) => [p.id, p]));
 let vProject = null;
 let vIndex = 0;
 
-function showImage(i) {
-  const imgs = vProject.images;
-  vIndex = (i + imgs.length) % imgs.length;
-  const item = imgs[vIndex];
-  vImg.src = item.src;
-  vImg.alt = item.alt;
+const el = (tag, attrs = {}, ...kids) => {
+  const node = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (v === false || v == null) continue;
+    if (k === 'class') node.className = v;
+    else if (k === 'text') node.textContent = v;
+    else node.setAttribute(k, v === true ? '' : v);
+  }
+  node.append(...kids);
+  return node;
+};
+const icon = (id) => {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+  use.setAttribute('href', `#${id}`);
+  svg.append(use);
+  return svg;
+};
+
+function renderMedia(item) {
+  if (item.type === 'video') {
+    const video = el('video', { src: item.src, poster: item.poster, controls: true, playsinline: true, preload: 'metadata', loop: true, 'aria-label': item.caption });
+    video.muted = true;
+    if (prefs.motion) video.autoplay = true;
+    return video;
+  }
+  if (item.type === 'youtube') {
+    // Nothing loads from YouTube until the visitor presses play.
+    const btn = el('button', { class: 'viewer__yt', type: 'button', 'aria-label': `Play video: ${item.caption}` },
+      el('img', { src: item.poster, alt: '' }),
+      el('span', { class: 'viewer__play' }, icon('i-play')),
+      el('span', { class: 'viewer__ytlabel' }, icon('i-youtube'), 'Play on YouTube'));
+    btn.addEventListener('click', () => {
+      const frame = el('iframe', {
+        src: `https://www.youtube-nocookie.com/embed/${item.id}?autoplay=1&rel=0&modestbranding=1`,
+        title: `${vProject.title}: ${item.caption}`,
+        allow: 'autoplay; encrypted-media; picture-in-picture; fullscreen',
+        allowfullscreen: true,
+        class: 'viewer__frame',
+      });
+      btn.replaceWith(frame);
+      trackEvent(`play-video-${item.id}`, `Played video: ${vProject.title}`);
+    });
+    return btn;
+  }
+  return el('img', { src: item.src, alt: item.alt });
+}
+
+function showItem(i) {
+  const items = vProject.media;
+  vIndex = (i + items.length) % items.length;
+  const item = items[vIndex];
+  vMedia.replaceChildren(renderMedia(item));
   $('#viewerCaption').textContent = item.caption;
-  $('#viewerCount').textContent = imgs.length > 1 ? `${vIndex + 1} / ${imgs.length}` : '';
+  $('#viewerCount').textContent = items.length > 1 ? `${vIndex + 1} / ${items.length}` : '';
   $$('button', vThumbs).forEach((b, n) => b.setAttribute('aria-current', String(n === vIndex)));
-  // warm the next image
-  if (imgs.length > 1) new Image().src = imgs[(vIndex + 1) % imgs.length].src;
+  const next = items[(vIndex + 1) % items.length];
+  if (items.length > 1 && next.type === 'image') new Image().src = next.src;
 }
 
 function openProject(id) {
-  vProject = PROJECTS[id];
+  vProject = byId[id];
   if (!vProject) return;
   $('#viewerTitle').textContent = vProject.title;
   $('#viewerTag').textContent = vProject.tag;
-  $('#viewerLink').href = vProject.link;
-  viewer.classList.toggle('is-single', vProject.images.length < 2);
-  vThumbs.replaceChildren(...vProject.images.map((item, n) => {
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.className = 'viewer__thumb';
-    b.setAttribute('aria-label', `Image ${n + 1}: ${item.caption.split('.')[0]}`);
-    const t = document.createElement('img');
-    t.src = item.src;
-    t.alt = '';
-    t.loading = 'lazy';
-    b.append(t);
-    b.addEventListener('click', () => showImage(n));
+  $('#viewerLink').href = vProject.link.href;
+  $('#viewerLinkLabel').textContent = vProject.link.label;
+  $('#viewerLinkIcon').setAttribute('href', `#i-${vProject.link.icon}`);
+  viewer.classList.toggle('is-single', vProject.media.length < 2);
+  vThumbs.replaceChildren(...vProject.media.map((item, n) => {
+    const b = el('button', { type: 'button', class: `viewer__thumb${item.type !== 'image' ? ' is-video' : ''}`, 'aria-label': `Item ${n + 1}: ${item.caption.split('.')[0]}` },
+      el('img', { src: item.type === 'image' ? item.src : item.poster, alt: '', loading: 'lazy' }));
+    if (item.type !== 'image') b.append(el('span', { class: 'viewer__thumbplay' }, icon('i-play')));
+    b.addEventListener('click', () => showItem(n));
     return b;
   }));
-  showImage(0);
+  showItem(0);
   viewer.showModal();
   trackEvent(`view-project-${id}`, `Opened project: ${vProject.title}`);
 }
 
-$$('[data-open]').forEach((btn) => btn.addEventListener('click', () => openProject(btn.dataset.open)));
+viewer.addEventListener('close', () => vMedia.replaceChildren()); // stops any playing video
 $('.viewer__close').addEventListener('click', () => viewer.close());
-$('.viewer__nav--prev').addEventListener('click', () => showImage(vIndex - 1));
-$('.viewer__nav--next').addEventListener('click', () => showImage(vIndex + 1));
+$('.viewer__nav--prev').addEventListener('click', () => showItem(vIndex - 1));
+$('.viewer__nav--next').addEventListener('click', () => showItem(vIndex + 1));
 viewer.addEventListener('keydown', (event) => {
-  if (event.key === 'ArrowLeft') showImage(vIndex - 1);
-  if (event.key === 'ArrowRight') showImage(vIndex + 1);
+  if (event.target.closest('video, iframe')) return;
+  if (event.key === 'ArrowLeft') showItem(vIndex - 1);
+  if (event.key === 'ArrowRight') showItem(vIndex + 1);
 });
 viewer.addEventListener('click', (event) => {
   if (event.target === viewer || event.target.classList.contains('viewer__stage')) viewer.close();
 });
-// swipe on touch screens
 let touchX = null;
-vImg.addEventListener('touchstart', (e) => { touchX = e.touches[0].clientX; }, { passive: true });
-vImg.addEventListener('touchend', (e) => {
+vMedia.addEventListener('touchstart', (e) => { touchX = e.touches[0].clientX; }, { passive: true });
+vMedia.addEventListener('touchend', (e) => {
   if (touchX === null) return;
   const dx = e.changedTouches[0].clientX - touchX;
-  if (Math.abs(dx) > 40) showImage(vIndex + (dx < 0 ? 1 : -1));
+  if (Math.abs(dx) > 40) showItem(vIndex + (dx < 0 ? 1 : -1));
   touchX = null;
 });
+
+/* ------------------------------------------------------------------ */
+/* Works cards + filters                                              */
+/* ------------------------------------------------------------------ */
+function workCard(p) {
+  const summary = mediaSummary(p);
+  const media = el('button', { class: 'work__media', type: 'button', 'aria-label': `View project: ${p.title}, ${summary}` },
+    el('img', { class: 'work__cover', src: p.cover, alt: '', loading: 'lazy', style: p.coverFit ? `object-position:${p.coverFit}` : null }));
+  if (p.hover) media.append(el('img', { class: 'work__hover', src: p.hover, alt: '', loading: 'lazy' }));
+  let vid = null;
+  if (p.hoverVideo) {
+    vid = el('video', { class: 'work__hover', src: p.hoverVideo, playsinline: true, preload: 'none', loop: true });
+    vid.muted = true;
+    media.append(vid);
+  }
+  const hasVideo = p.media.some((m) => m.type !== 'image');
+  media.append(el('span', { class: 'work__count' }, hasVideo ? icon('i-play') : '', summary));
+  if (p.hover || p.hoverVideo) media.append(el('span', { class: 'work__peek', 'aria-hidden': 'true' }, p.hoverVideo ? 'Hover to play' : 'Hover for process'));
+
+  const card = el('li', { class: `work${p.featured ? ' work--featured' : ''}`, 'data-project': p.id, 'data-filters': p.filters.join(' ') },
+    media,
+    el('div', { class: 'work__body' },
+      el('span', { class: 'work__tag', text: p.featured ? `Featured · ${p.tag}` : p.tag }),
+      el('h3', { class: 'work__title', text: p.title }),
+      el('p', { class: 'work__desc', text: p.desc }),
+      el('div', { class: 'work__actions' },
+        el('button', { class: 'work__view', type: 'button' }, 'View project ', icon('i-arrow')),
+        el('a', { class: 'work__ext', href: p.link.href, target: '_blank', rel: 'noopener', 'aria-label': `${p.title}: ${p.link.label} (opens in a new tab)` }, icon(`i-${p.link.icon}`), icon('i-ext')))));
+
+  const open = () => openProject(p.id);
+  media.addEventListener('click', open);
+  $('.work__view', card).addEventListener('click', open);
+
+  // Hover preview: cross-fade to a process image, or play a muted looping video
+  const enter = () => {
+    card.classList.add('is-peek');
+    if (vid && prefs.motion) vid.play().catch(() => {});
+  };
+  const leave = () => {
+    card.classList.remove('is-peek');
+    if (vid) {
+      vid.pause();
+      vid.currentTime = 0;
+    }
+  };
+  card.addEventListener('pointerenter', (e) => e.pointerType === 'mouse' && enter());
+  card.addEventListener('pointerleave', leave);
+  media.addEventListener('focus', enter);
+  media.addEventListener('blur', leave);
+  return card;
+}
+
+{
+  const list = $('#worksList');
+  list.replaceChildren(...PROJECTS.map(workCard));
+  $('#worksKicker').textContent = `Selected work · ${PROJECTS.length} projects`;
+  const bar = $('#workFilters');
+  const count = (id) => (id === 'all' ? PROJECTS.length : PROJECTS.filter((p) => p.filters.includes(id)).length);
+  bar.replaceChildren(...FILTERS.filter((f) => count(f.id) > 0).map((f) => {
+    const b = el('button', { type: 'button', class: 'chip', 'aria-pressed': String(f.id === 'all'), 'data-filter': f.id }, f.label, el('span', { class: 'chip__n', text: String(count(f.id)) }));
+    b.addEventListener('click', () => {
+      $$('.chip', bar).forEach((c) => c.setAttribute('aria-pressed', String(c === b)));
+      $$('.work', list).forEach((card) => {
+        card.hidden = !(f.id === 'all' || card.dataset.filters.split(' ').includes(f.id));
+      });
+      trackEvent(`filter-${f.id}`, `Filtered works: ${f.label}`);
+    });
+    return b;
+  }));
+}

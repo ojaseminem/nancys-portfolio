@@ -5,6 +5,7 @@ const SECTIONS = ['profile', 'works', 'skills', 'about', 'contact'];
 // Skip the cinematic intro for most tests.
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => sessionStorage.setItem('intro:seen', '1'));
+  await page.route(/youtube/, (route) => route.fulfill({ contentType: 'text/html', body: '<html></html>' }));
   // Never send real analytics from tests.
   await page.route('https://gc.zgo.at/**', (route) =>
     route.fulfill({ contentType: 'text/javascript', body: 'window.__gc = []; window.goatcounter.count = (p) => window.__gc.push(p);' }),
@@ -32,12 +33,19 @@ test('all images load', async ({ page }) => {
   await page.goto('/');
   await page.waitForLoadState('networkidle');
   await page.locator('#tab-works').click();
-  for (const img of await page.locator('.work__media img').all()) await img.scrollIntoViewIfNeeded();
-  await page.waitForFunction(() => [...document.images].filter((i) => !i.closest('[hidden]') && !i.closest('dialog')).every((i) => i.complete));
+  for (const img of await page.locator('.work__media img.work__cover').all()) await img.scrollIntoViewIfNeeded();
+  await page.waitForFunction(() => [...document.images].filter((i) => !i.closest('[hidden]') && !i.closest('dialog') && !i.classList.contains('work__hover')).every((i) => i.complete));
   const broken = await page.$$eval('img', (imgs) =>
-    imgs.filter((i) => i.getAttribute('src') && !(i.complete && i.naturalWidth > 0) && !i.closest('dialog') && !i.closest('[hidden]')).map((i) => i.src),
+    imgs.filter((i) => i.getAttribute('src') && !i.classList.contains('work__hover') && !(i.complete && i.naturalWidth > 0) && !i.closest('dialog') && !i.closest('[hidden]')).map((i) => i.src),
   );
   expect(broken).toEqual([]);
+  // every project file (covers, hover previews, viewer images, videos) is served
+  const files = await page.$$eval('.work__media img, .work__media video', (els) => els.map((m) => m.getAttribute('src')));
+  expect(files.length).toBeGreaterThan(5);
+  for (const src of files) {
+    const res = await page.request.get(new URL(src, page.url()).href);
+    expect(res.status(), src).toBe(200);
+  }
 });
 
 test('tab navigation switches panels and updates the URL', async ({ page }) => {
@@ -86,24 +94,26 @@ test('copy button copies the email', async ({ page, context, browserName }) => {
 
 test('project viewer opens, pages through images and closes', async ({ page }) => {
   await page.goto('/#works');
-  const cards = page.locator('.work');
-  await expect(cards).toHaveCount(3);
+  await expect(page.locator('.work')).toHaveCount(5);
   await page.locator('.work[data-project="ursula"] .work__view').click();
   const viewer = page.locator('#viewer');
+  const img = page.locator('#viewerMedia img');
   await expect(viewer).toBeVisible();
   await expect(page.locator('#viewerTitle')).toHaveText('Ursula');
-  await expect(page.locator('#viewerImg')).toHaveAttribute('src', /ursula-render\.webp/);
+  await expect(img).toHaveAttribute('src', /ursula-render\.webp/);
   await expect(page.locator('#viewerLink')).toHaveAttribute('href', 'https://www.artstation.com/artwork/Z0P43x');
-  await expect(page.locator('#viewerCount')).toHaveText('1 / 3');
+  await expect(page.locator('#viewerCount')).toHaveText('1 / 4');
   await page.locator('#viewerThumbs button').nth(1).click();
-  await expect(page.locator('#viewerImg')).toHaveAttribute('src', /ursula-sculpt\.webp/);
+  await expect(img).toHaveAttribute('src', /ursula-sculpt\.webp/);
   await page.keyboard.press('ArrowRight');
-  await expect(page.locator('#viewerImg')).toHaveAttribute('src', /ursula-topology\.webp/);
+  await expect(img).toHaveAttribute('src', /ursula-topology\.webp/);
   await page.keyboard.press('ArrowRight');
-  await expect(page.locator('#viewerCount')).toHaveText('1 / 3');
+  await expect(img).toHaveAttribute('src', /ursula-throne\.webp/);
+  await page.keyboard.press('ArrowRight');
+  await expect(page.locator('#viewerCount')).toHaveText('1 / 4');
   // every image in the set actually loads
-  for (let i = 0; i < 3; i++) {
-    await expect.poll(() => page.locator('#viewerImg').evaluate((img) => img.complete && img.naturalWidth > 0)).toBe(true);
+  for (let i = 0; i < 4; i++) {
+    await expect.poll(() => img.evaluate((el) => el.complete && el.naturalWidth > 0)).toBe(true);
     await page.keyboard.press('ArrowRight');
   }
   await page.keyboard.press('Escape');
@@ -114,13 +124,60 @@ test('project viewer opens, pages through images and closes', async ({ page }) =
   await expect(page.locator('#viewerLink')).toHaveAttribute('href', 'https://www.artstation.com/artwork/AoQdyW');
   await expect(page.locator('#viewerThumbs button')).toHaveCount(2);
   await page.locator('#viewerThumbs button').nth(1).click();
-  await expect(page.locator('#viewerImg')).toHaveAttribute('src', /swan-breakdown\.webp/);
+  await expect(img).toHaveAttribute('src', /swan-breakdown\.webp/);
 });
 
-test('works cards link to the right ArtStation pages', async ({ page }) => {
+test('video project plays its animation and shows the final still', async ({ page }) => {
+  await page.goto('/#works');
+  await page.locator('.work[data-project="blossom-lamp"] .work__view').click();
+  const video = page.locator('#viewerMedia video');
+  await expect(video).toHaveAttribute('src', /blossom-lamp\.mp4/);
+  await expect.poll(() => video.evaluate((v) => v.readyState)).toBeGreaterThan(0);
+  expect(await video.evaluate((v) => v.duration)).toBeGreaterThan(9);
+  await page.locator('#viewerThumbs button').nth(1).click();
+  await expect(page.locator('#viewerMedia img')).toHaveAttribute('src', /blossom-lamp\.webp/);
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#viewerMedia video')).toHaveCount(0);
+});
+
+test('YouTube films load only after pressing play', async ({ page }) => {
+  const yt = [];
+  page.on('request', (r) => (r.url().includes('youtube') ? yt.push(r.url()) : null));
+  await page.goto('/#works');
+  const featured = page.locator('.work--featured');
+  await expect(featured).toHaveAttribute('data-project', 'meta-quest');
+  await featured.locator('.work__view').click();
+  await expect(page.locator('#viewerTitle')).toHaveText('Meta Quest 3 Campaign');
+  await expect(page.locator('#viewerLink')).toHaveAttribute('href', 'https://www.youtube.com/watch?v=miQX34ESRho');
+  await expect(page.locator('#viewerThumbs button')).toHaveCount(5);
+  expect(yt).toEqual([]);
+  await page.getByRole('button', { name: /Play video: Campaign film, part one/ }).click();
+  await expect(page.locator('#viewerMedia iframe')).toHaveAttribute('src', /youtube-nocookie\.com\/embed\/miQX34ESRho/);
+  await page.locator('#viewerThumbs button').nth(1).click();
+  await expect(page.locator('#viewerMedia iframe')).toHaveCount(0);
+  await page.getByRole('button', { name: /Play video: Campaign film, part two/ }).click();
+  await expect(page.locator('#viewerMedia iframe')).toHaveAttribute('src', /lOjsx8v0duY/);
+});
+
+test('filters narrow the project list', async ({ page }) => {
+  await page.goto('/#works');
+  const visible = page.locator('.work:visible');
+  await expect(visible).toHaveCount(5);
+  await page.locator('.chip[data-filter="motion"]').click();
+  await expect(page.locator('.chip[data-filter="motion"]')).toHaveAttribute('aria-pressed', 'true');
+  await expect(visible).toHaveCount(2);
+  await page.locator('.chip[data-filter="2d"]').click();
+  await expect(visible).toHaveCount(1);
+  await expect(visible.first()).toHaveAttribute('data-project', 'vaishnavi');
+  await page.locator('.chip[data-filter="all"]').click();
+  await expect(visible).toHaveCount(5);
+});
+
+test('works cards link to the right pages', async ({ page }) => {
   await page.goto('/#works');
   await expect(page.locator('.work[data-project="ursula"] .work__ext')).toHaveAttribute('href', 'https://www.artstation.com/artwork/Z0P43x');
   await expect(page.locator('.work[data-project="swan"] .work__ext')).toHaveAttribute('href', 'https://www.artstation.com/artwork/AoQdyW');
+  await expect(page.locator('.work[data-project="meta-quest"] .work__ext')).toHaveAttribute('href', 'https://www.youtube.com/watch?v=miQX34ESRho');
 });
 
 test('keyboard arrows move between tabs', async ({ page, isMobile }) => {

@@ -18,7 +18,7 @@ The portfolio of Rajnandini Chavan, a UI/UX designer and character artist based 
 | Section | What's in it |
 | --- | --- |
 | **Profile** | Name, role, availability, discipline, what she is looking for, location, and her disciplines (UI design, UX design, iconography, visual design, character, illustration, concept art, costume) |
-| **Works** | Three projects (Ursula, Swan & Lotus Relief, Vaishnavi) shown as matching cards. Each opens a full-screen viewer with the final piece and its process images, and links to the project on ArtStation |
+| **Works** | Five projects: Meta Quest 3 Campaign (featured, with two YouTube films), Ursula, Blossom Lamp (animation), Swan & Lotus Relief and Vaishnavi. Filters for 3D, Motion and 2D. Cards preview the process or play the animation on hover, and each opens a full-screen viewer with images, videos and a link to the project page |
 | **Skills** | UI/UX and visual skills, art skills, and craft strengths |
 | **About** | Her story, the roles she is looking for (UI/UX and creative), and location preference (Pune on-site or remote) |
 | **Contact** | Email, phone, ArtStation, Behance and location, with one-tap copy buttons |
@@ -59,6 +59,8 @@ The site has visitor analytics built in using **[GoatCounter](https://www.goatco
 | `copy-email` | Copied the email address |
 | `copy-phone` | Copied the phone number |
 | `view-project-…` | Opened a project in the full-screen viewer (for example `view-project-ursula`) |
+| `play-video-…` | Pressed play on a YouTube film inside the viewer |
+| `filter-…` | Used a Works filter (`filter-3d`, `filter-motion`, `filter-2d`) |
 | `intro-skipped` | Skipped the intro |
 | `setting-motion-off` / `setting-motion-on` | Turned the ambient motion off or on |
 
