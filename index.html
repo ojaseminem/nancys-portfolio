@@ -76,6 +76,7 @@
     <symbol id="e-visual" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 38 24 8l16 30"/><path d="M13.5 28h21"/><circle cx="8" cy="38" r="2.5" fill="currentColor"/><circle cx="40" cy="38" r="2.5" fill="currentColor"/><circle cx="24" cy="8" r="2.5" fill="currentColor"/></g></symbol>
     <symbol id="i-youtube" viewBox="0 0 24 24"><path fill="currentColor" d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8ZM9.8 15.1V8.9l5.7 3.1-5.7 3.1Z"/></symbol>
     <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5.2v13.6a.8.8 0 0 0 1.2.7l10.6-6.8a.8.8 0 0 0 0-1.4L9.2 4.5A.8.8 0 0 0 8 5.2Z"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3.5v12m-5-5 5 5 5-5"/><path d="M4.5 16.5v2.5a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5v-2.5"/></g></symbol>
     <!-- stat glyphs -->
     <symbol id="s-discipline" viewBox="0 0 24 24"><path d="M12 2.5c.4 4.4 1.9 7 8.5 9.5-6.6 2.5-8.1 5.1-8.5 9.5-.4-4.4-1.9-7-8.5-9.5 6.6-2.5 8.1-5.1 8.5-9.5Z" fill="currentColor"/></symbol>
     <symbol id="s-focus" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></g></symbol>
@@ -205,7 +206,7 @@
       <li role="presentation"><a class="navlink" role="tab" href="#profile" data-nav="profile" id="tab-profile" aria-controls="profile"><svg class="navlink__icon"><use href="#i-profile" /></svg><span>Profile</span></a></li>
       <li role="presentation"><a class="navlink" role="tab" href="#works" data-nav="works" id="tab-works" aria-controls="works"><svg class="navlink__icon"><use href="#i-works" /></svg><span>Works</span></a></li>
       <li role="presentation"><a class="navlink" role="tab" href="#skills" data-nav="skills" id="tab-skills" aria-controls="skills"><svg class="navlink__icon"><use href="#i-skills" /></svg><span>Skills</span></a></li>
-      <li role="presentation"><a class="navlink" role="tab" href="#about" data-nav="about" id="tab-about" aria-controls="about"><svg class="navlink__icon"><use href="#i-journey" /></svg><span>About</span></a></li>
+      <li role="presentation"><a class="navlink" role="tab" href="#resume" data-nav="resume" id="tab-resume" aria-controls="resume"><svg class="navlink__icon"><use href="#i-journey" /></svg><span>Resume</span></a></li>
       <li role="presentation"><a class="navlink" role="tab" href="#contact" data-nav="contact" id="tab-contact" aria-controls="contact"><svg class="navlink__icon"><use href="#i-contact" /></svg><span>Contact</span></a></li>
     </ul>
 
@@ -254,23 +255,16 @@
         <div class="bar" role="presentation"><span class="bar__fill" style="--v: 1"></span></div>
       </div>
 
+      <div class="prose prose--profile">
+        <p>I'm Rajnandini, a UI/UX and visual designer from Pune with an illustrator's eye and a 3D toolkit. I've designed icon systems, landing pages and a full trading-platform design system, alongside exhibition graphics, apparel and tactile story panels for visually impaired children.</p>
+        <p>I care about interfaces that are easy to use and still have character: clear hierarchy, icons that read at a glance, and files that developers and manufacturers can build from without guesswork.</p>
+      </div>
+
       <dl class="stats">
         <div class="stat"><dt><svg><use href="#s-discipline" /></svg>Discipline</dt><dd>UI/UX, Visual &amp; Character Art</dd></div>
         <div class="stat"><dt><svg><use href="#s-mode" /></svg>Looking for</dt><dd>UI/UX &amp; creative roles</dd></div>
         <div class="stat"><dt><svg><use href="#s-base" /></svg>Open to work</dt><dd>Remote / On-site in Pune</dd></div>
       </dl>
-
-      <h2 class="divider"><span>Disciplines</span></h2>
-      <ul class="disciplines">
-        <li class="disc"><span class="disc__orb"><svg><use href="#e-ui" /></svg></span><span class="disc__label">UI Design</span></li>
-        <li class="disc"><span class="disc__orb"><svg><use href="#e-ux" /></svg></span><span class="disc__label">UX Design</span></li>
-        <li class="disc"><span class="disc__orb"><svg><use href="#e-icons" /></svg></span><span class="disc__label">Iconography</span></li>
-        <li class="disc"><span class="disc__orb"><svg><use href="#e-visual" /></svg></span><span class="disc__label">Visual Design</span></li>
-        <li class="disc"><span class="disc__orb disc__orb--warm"><svg><use href="#e-character" /></svg></span><span class="disc__label">Character</span></li>
-        <li class="disc"><span class="disc__orb disc__orb--warm"><svg><use href="#e-illustration" /></svg></span><span class="disc__label">Illustration</span></li>
-        <li class="disc"><span class="disc__orb disc__orb--warm"><svg><use href="#e-concept" /></svg></span><span class="disc__label">Concept Art</span></li>
-        <li class="disc"><span class="disc__orb disc__orb--warm"><svg><use href="#e-costume" /></svg></span><span class="disc__label">Costume</span></li>
-      </ul>
 
       <a class="cta" href="#works" data-nav="works">
         <svg class="cta__frame" viewBox="0 0 320 64" aria-hidden="true" preserveAspectRatio="none">
@@ -349,24 +343,21 @@
       </ul>
     </section>
 
-    <!-- ABOUT -->
-    <section class="panel" id="about" role="tabpanel" aria-labelledby="tab-about" hidden>
+    <!-- RESUME -->
+    <section class="panel" id="resume" role="tabpanel" aria-labelledby="tab-resume" hidden>
       <header class="panel__head">
-        <p class="kicker">Lore</p>
-        <h2 class="panel__title">About</h2>
+        <p class="kicker">Experience</p>
+        <h2 class="panel__title">Resume</h2>
       </header>
-      <div class="prose">
-        <p>I'm Rajnandini, a UI/UX designer and character artist from Pune. I design people first: who they are, where they've been, what they'd carry. Then I let the costume tell that story before anyone reads a line of lore.</p>
-        <p>My work leans on textiles and traditional craft: woven borders, block-print geometry, the way heavy cotton folds against something lighter. I like mixing that heritage with contemporary, functional silhouettes so a character feels rooted and current at the same time.</p>
-        <p>The same eye carries into interface work: clear hierarchy, icons that read at a glance, and screens that feel like they belong to a world rather than a template. I enjoy designing UI that is easy to use and still has personality.</p>
+      <p class="lede resume__summary" id="resumeSummary"></p>
+      <div class="resume__downloads">
+        <a class="dl" href="./resume/Rajnandini-Chavan-Resume.pdf" download><svg><use href="#i-download" /></svg><span><strong>Download PDF</strong><small>A4 · 2 pages</small></span></a>
+        <a class="dl" href="./resume/Rajnandini-Chavan-Resume.docx" download><svg><use href="#i-download" /></svg><span><strong>Download DOCX</strong><small>Editable Word file</small></span></a>
       </div>
-
-      <h3 class="divider"><span>Seeking</span></h3>
-      <ul class="quest">
-        <li><span class="quest__mark"></span><div><strong>Roles</strong><p>UI/UX designer, visual or icon designer, and creative art roles: character artist, illustrator, concept artist. For apps, games, animation or publishing.</p></div></li>
-        <li><span class="quest__mark"></span><div><strong>Location</strong><p>On-site in Pune preferred. Open to fully remote teams anywhere.</p></div></li>
-        <li><span class="quest__mark"></span><div><strong>Best fit</strong><p>Creative product and game teams where interfaces and visuals carry a strong identity.</p></div></li>
-      </ul>
+      <h3 class="divider"><span>Experience</span></h3>
+      <ol class="timeline" id="resumeTimeline"></ol>
+      <h3 class="divider"><span>Toolkit</span></h3>
+      <div class="resume__skills" id="resumeSkills"></div>
     </section>
 
     <!-- CONTACT -->
@@ -395,6 +386,10 @@
         <li class="ci">
           <span class="ci__icon"><svg><use href="#i-behance" /></svg></span>
           <a class="ci__main" href="https://www.behance.net/rajnandchavan1" target="_blank" rel="noopener"><small>Behance</small>behance.net/rajnandchavan1</a>
+        </li>
+        <li class="ci">
+          <span class="ci__icon"><svg><use href="#i-journey" /></svg></span>
+          <span class="ci__main"><small>Resume</small><span><a href="./resume/Rajnandini-Chavan-Resume.pdf" download>PDF</a> · <a href="./resume/Rajnandini-Chavan-Resume.docx" download>DOCX</a> · <a href="#resume" data-nav="resume">View online</a></span></span>
         </li>
         <li class="ci">
           <span class="ci__icon"><svg><use href="#i-pin" /></svg></span>

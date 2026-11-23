@@ -17,10 +17,10 @@ The portfolio of Rajnandini Chavan, a UI/UX designer and character artist based 
 
 | Section | What's in it |
 | --- | --- |
-| **Profile** | Name, role, availability, discipline, what she is looking for, location, and her disciplines (UI design, UX design, iconography, visual design, character, illustration, concept art, costume) |
+| **Profile** | Name, role, availability, a short two-paragraph introduction, discipline, what she is looking for and where she is open to work |
 | **Works** | Five projects: Meta Quest 3 Campaign (featured, with two YouTube films), Ursula, Blossom Lamp (animation), Swan & Lotus Relief and Vaishnavi. Filters for 3D, Motion and 2D. Cards preview the process or play the animation on hover, and each opens a full-screen viewer with images, videos and a link to the project page |
 | **Skills** | UI/UX and visual skills, art skills, and craft strengths |
-| **About** | Her story, the roles she is looking for (UI/UX and creative), and location preference (Pune on-site or remote) |
+| **Resume** | Professional summary, full work experience as a timeline, toolkit, and one-click downloads of the resume as PDF and Word (DOCX) |
 | **Contact** | Email, phone, ArtStation, Behance and location, with one-tap copy buttons |
 
 Visitors on a computer get a short cinematic intro and a mouse parallax effect, where the scene shifts in depth and the character leans toward the cursor. Phones get a touch-friendly layout with a bottom menu. People who prefer less motion can switch the effects off from the ⚙ menu.
@@ -45,7 +45,7 @@ The site has visitor analytics built in using **[GoatCounter](https://www.goatco
 | `/` | Landed on the Profile |
 | `/works` | Opened Works |
 | `/skills` | Opened Skills |
-| `/about` | Opened About |
+| `/resume` | Opened Resume |
 | `/contact` | Opened Contact |
 
 **Events**, for the actions that matter when someone is considering hiring her:
@@ -60,6 +60,7 @@ The site has visitor analytics built in using **[GoatCounter](https://www.goatco
 | `copy-phone` | Copied the phone number |
 | `view-project-…` | Opened a project in the full-screen viewer (for example `view-project-ursula`) |
 | `play-video-…` | Pressed play on a YouTube film inside the viewer |
+| `download-resume-pdf` / `download-resume-docx` | Downloaded the resume |
 | `filter-…` | Used a Works filter (`filter-3d`, `filter-motion`, `filter-2d`) |
 | `intro-skipped` | Skipped the intro |
 | `setting-motion-off` / `setting-motion-on` | Turned the ambient motion off or on |
@@ -130,7 +131,8 @@ A full publish takes about two minutes.
 Things that are easy to change:
 
 - New projects for the Works section (send the final image, any process or breakdown images, a title, a one-line description and the ArtStation link)
-- Profile details, skills, the About text and what roles she is looking for
+- Profile details, skills, the introduction text and what roles she is looking for
+- Resume entries (the website, PDF and Word versions all update together)
 - Contact details and links
 - A résumé PDF download button
 - A custom domain such as `rajnandinichavan.com`

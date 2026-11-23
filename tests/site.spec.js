@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const SECTIONS = ['profile', 'works', 'skills', 'about', 'contact'];
+const SECTIONS = ['profile', 'works', 'skills', 'resume', 'contact'];
 
 // Skip the cinematic intro for most tests.
 test.beforeEach(async ({ page }) => {
@@ -60,7 +60,7 @@ test('tab navigation switches panels and updates the URL', async ({ page }) => {
     }
   }
   await page.goBack();
-  await expect(page.locator('#about')).toBeVisible();
+  await expect(page.locator('#resume')).toBeVisible();
 });
 
 test('deep link opens the right panel', async ({ page }) => {
@@ -326,4 +326,33 @@ test('analytics record section views and key clicks when switched on', async ({ 
   expect(calls).toContainEqual(expect.objectContaining({ path: 'copy-email', event: true }));
   const script = await page.locator('script[src="https://gc.zgo.at/count.js"]').getAttribute('data-goatcounter');
   expect(script).toBe('https://testsite.goatcounter.com/count');
+});
+
+test('resume tab shows experience and offers PDF and DOCX downloads', async ({ page }) => {
+  await page.goto('/#resume');
+  await expect(page.locator('#resume')).toBeVisible();
+  await expect(page.locator('#resume .tl')).toHaveCount(5);
+  await expect(page.locator('#resume .tl').first()).toContainText('Gaint Media');
+  await expect(page.locator('#resume')).toContainText('HD Trade Platform');
+  // check the file signatures (the local preview server does not label .docx; GitHub Pages does)
+  for (const [ext, magic] of [['pdf', '%PDF'], ['docx', 'PK']]) {
+    const link = page.locator(`#resume a.dl[href$=".${ext}"]`);
+    await expect(link).toHaveAttribute('download', '');
+    const res = await page.request.get(new URL(await link.getAttribute('href'), page.url()).href);
+    expect(res.status()).toBe(200);
+    expect((await res.body()).subarray(0, magic.length).toString()).toBe(magic);
+    expect((await res.body()).length).toBeGreaterThan(5000);
+  }
+});
+
+test('old #about links open the resume', async ({ page }) => {
+  await page.goto('/#about');
+  await expect(page.locator('#resume')).toBeVisible();
+});
+
+test('profile shows the short intro and no discipline circles', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#profile .prose--profile p')).toHaveCount(2);
+  await expect(page.locator('.disciplines')).toHaveCount(0);
+  await expect(page.locator('#profile .stats')).toContainText('Open to work');
 });

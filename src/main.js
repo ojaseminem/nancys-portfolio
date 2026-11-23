@@ -1,6 +1,7 @@
 import './style.css';
 import { trackView, trackEvent } from './analytics.js';
 import { PROJECTS, FILTERS, mediaSummary } from './works.js';
+import { RESUME } from './resume.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -34,18 +35,20 @@ const prefs = {
 /* ------------------------------------------------------------------ */
 /* Tabs / routing                                                      */
 /* ------------------------------------------------------------------ */
-const SECTIONS = ['profile', 'works', 'skills', 'about', 'contact'];
+const SECTIONS = ['profile', 'works', 'skills', 'resume', 'contact'];
+const ALIASES = { about: 'resume' }; // old links keep working
 const TITLES = {
   profile: 'Rajnandini Chavan | UI/UX Designer & Character Artist',
   works: 'Works | Rajnandini Chavan',
   skills: 'Skills | Rajnandini Chavan',
-  about: 'About | Rajnandini Chavan',
+  resume: 'Resume | Rajnandini Chavan',
   contact: 'Contact | Rajnandini Chavan',
 };
 const panelsEl = $('#panels');
 let current = null;
 
 function show(id, { focus = false, scroll = false } = {}) {
+  id = ALIASES[id] || id;
   if (!SECTIONS.includes(id)) id = 'profile';
   if (id === current) {
     if (scroll) scrollToPanels();
@@ -592,4 +595,24 @@ function workCard(p) {
     });
     return b;
   }));
+}
+
+/* ------------------------------------------------------------------ */
+/* Resume                                                              */
+/* ------------------------------------------------------------------ */
+{
+  $('#resumeSummary').textContent = RESUME.summary;
+  const bullets = (points) => el('ul', { class: 'tl__points' }, ...points.map((t) => el('li', { text: t })));
+  $('#resumeTimeline').replaceChildren(...RESUME.experience.map((job) => el('li', { class: 'tl' },
+    el('span', { class: 'tl__mark', 'aria-hidden': 'true' }),
+    el('p', { class: 'tl__dates', text: job.dates }),
+    el('h3', { class: 'tl__org' }, job.org, job.place ? el('span', { class: 'tl__place', text: ` · ${job.place}` }) : ''),
+    el('p', { class: 'tl__role', text: job.role }),
+    job.points ? bullets(job.points) : '',
+    ...(job.projects || []).map((proj) => el('div', { class: 'tl__proj' }, el('h4', { text: proj.name }), bullets(proj.points))),
+  )));
+  $('#resumeSkills').replaceChildren(...RESUME.skills.map((g) => el('div', { class: 'rs' },
+    el('h4', { text: g.group }),
+    el('ul', { class: 'chips' }, ...g.items.map((t) => el('li', { text: t }))))));
+  $$('a[download]').forEach((a) => a.addEventListener('click', () => trackEvent(`download-resume-${a.href.split('.').pop()}`, 'Downloaded resume')));
 }
