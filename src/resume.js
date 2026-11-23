@@ -20,7 +20,7 @@ export const RESUME = {
 
   experience: [
     {
-      org: 'Gaint Media Pvt. Ltd.',
+      org: 'Giant Media Pvt. Ltd.',
       place: 'Pune',
       role: 'Freelance Designer',
       dates: 'Dec 2025 – Jul 2026',
@@ -52,7 +52,7 @@ export const RESUME = {
       ],
     },
     {
-      org: 'impress',
+      org: 'Cimpress',
       place: 'Remote',
       role: 'Graphic Designer / Clothing Designer',
       dates: 'May 2025 – Jul 2025',
@@ -116,11 +116,41 @@ export const RESUME = {
     },
   ],
 
+  education: [
+    {
+      school: 'Bharati Vidyapeeth',
+      detail: 'Bachelor of Fine Arts (Applied Arts)',
+      dates: '2021 – 2025',
+      result: 'CGPA 8.2',
+    },
+    {
+      school: 'Sri Krishna College, Gunjoti',
+      detail: 'Higher Secondary (12th)',
+      dates: '2020 – 2021',
+      result: '95%',
+    },
+    {
+      school: 'Mahatma Bashveshwar Vidyalaya, Omerga',
+      detail: 'Secondary School (10th)',
+      dates: '2018 – 2019',
+      result: '97.8%',
+    },
+  ],
+
+  achievements: [
+    {
+      title: 'IndiaSkills national competitor, Graphic Design Technology',
+      text: 'Won the district, state and regional rounds, and received the Medallion of Excellence at the national competition in Delhi.',
+    },
+  ],
+
   skills: [
     { group: 'UI/UX', items: ['Interface design', 'Design systems', 'Landing pages', 'Usability', 'Developer handoff'] },
     { group: 'Visual & brand', items: ['Iconography', 'Illustration', 'Logo & identity', 'Exhibition graphics', 'Print collateral'] },
     { group: '3D & motion', items: ['3D modelling', 'Sculpting & retopology', 'Texturing', 'Animation', 'Tactile & physical design'] },
-    { group: 'Tools', items: ['Blender', 'ZBrush', 'StitchX'] },
+    { group: 'Design tools', items: ['Figma', 'Adobe Photoshop', 'Adobe Illustrator'] },
+    { group: '3D tools', items: ['Blender', 'ZBrush', 'Autodesk Maya', 'Substance Painter'] },
+    { group: 'Production', items: ['StitchX'] },
   ],
 };
 

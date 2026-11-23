@@ -332,8 +332,11 @@ test('resume tab shows experience and offers PDF and DOCX downloads', async ({ p
   await page.goto('/#resume');
   await expect(page.locator('#resume')).toBeVisible();
   await expect(page.locator('#resume .tl')).toHaveCount(5);
-  await expect(page.locator('#resume .tl').first()).toContainText('Gaint Media');
+  await expect(page.locator('#resume .tl').first()).toContainText('Giant Media');
   await expect(page.locator('#resume')).toContainText('HD Trade Platform');
+  await expect(page.locator('#resume')).toContainText('Cimpress');
+  await expect(page.locator('#resume .edu')).toHaveCount(3);
+  await expect(page.locator('#resume .ach')).toContainText('IndiaSkills');
   // check the file signatures (the local preview server does not label .docx; GitHub Pages does)
   for (const [ext, magic] of [['pdf', '%PDF'], ['docx', 'PK']]) {
     const link = page.locator(`#resume a.dl[href$=".${ext}"]`);

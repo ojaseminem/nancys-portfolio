@@ -105,13 +105,10 @@ def character():
     w, h = c.size
     save_webp(c.resize((round(w * 1200 / h), 1200), Image.LANCZOS), "character-1200.webp", 84)
 
-    # Portrait for the roster avatar: square crop centred on the face
-    # (nose at roughly x=503 in master space) so it sits centred in the circle.
-    src = Image.open(SRC / "character.webp").convert("RGBA")
-    head = src.crop((353, 0, 653, 300))
-    bg = Image.new("RGBA", head.size, (58, 36, 72, 255))
-    bg.alpha_composite(head)
-    save_webp(bg.convert("RGB").resize((256, 256), Image.LANCZOS), "portrait.webp", 86)
+    # Roster avatar + resume photo: Rajnandini's photo, already cropped square on her face.
+    photo = Image.open(SRC / "rajnandini-photo.jpg").convert("RGB")
+    save_webp(photo.resize((256, 256), Image.LANCZOS), "portrait.webp", 88)
+    photo.resize((320, 320), Image.LANCZOS).save(OUT / "photo-resume.jpg", quality=90)
 
     # Soft silhouette used for the "rim light" behind the character
     alpha = c.split()[3].resize((round(w * 600 / h), 600), Image.LANCZOS)

@@ -611,6 +611,12 @@ function workCard(p) {
     job.points ? bullets(job.points) : '',
     ...(job.projects || []).map((proj) => el('div', { class: 'tl__proj' }, el('h4', { text: proj.name }), bullets(proj.points))),
   )));
+  $('#resumeEducation').replaceChildren(...RESUME.education.map((e) => el('li', { class: 'edu' },
+    el('div', {}, el('strong', { text: e.detail }), el('span', { text: e.school })),
+    el('p', { class: 'edu__meta' }, el('span', { text: e.dates }), el('span', { class: 'edu__result', text: e.result })))));
+  $('#resumeAchievements').replaceChildren(...RESUME.achievements.map((a) => el('div', { class: 'ach' },
+    el('span', { class: 'ach__medal', 'aria-hidden': 'true' }, icon('i-star')),
+    el('div', {}, el('strong', { text: a.title }), el('p', { text: a.text })))));
   $('#resumeSkills').replaceChildren(...RESUME.skills.map((g) => el('div', { class: 'rs' },
     el('h4', { text: g.group }),
     el('ul', { class: 'chips' }, ...g.items.map((t) => el('li', { text: t }))))));

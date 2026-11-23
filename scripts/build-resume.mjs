@@ -1,11 +1,12 @@
 // Generates the downloadable resume (PDF + DOCX) from src/resume.js.
 // Run with:  npm run resume
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import path from 'node:path';
 import { chromium } from 'playwright';
 import {
-  AlignmentType, BorderStyle, Document, ExternalHyperlink, LevelFormat, Packer, Paragraph, TabStopType, TextRun,
+  AlignmentType, BorderStyle, Document, ExternalHyperlink, ImageRun, LevelFormat, Packer, Paragraph, Table, TableCell,
+  TableRow, TabStopType, TextRun, VerticalAlign, WidthType,
 } from 'docx';
 import { RESUME as R } from '../src/resume.js';
 
@@ -15,6 +16,7 @@ const BASE = 'Rajnandini-Chavan-Resume';
 await mkdir(OUT, { recursive: true });
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const PHOTO = path.join(ROOT, 'public', 'assets', 'photo-resume.jpg');
 const font = (pkg, file) => pathToFileURL(path.join(ROOT, 'node_modules', '@fontsource', pkg, 'files', file)).href;
 
 /* ------------------------------------------------------------------ PDF */
@@ -40,7 +42,7 @@ body { margin: 0; font-family: Garamond, Georgia, serif; font-size: 10.4pt; line
 .top { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; padding-bottom: 10px; border-bottom: 1.4px solid #b98a4e; }
 h1 { margin: 0; font-family: Cormorant, Georgia, serif; font-weight: 600; font-size: 30pt; line-height: 1; color: #2b1838; }
 .title { white-space: nowrap; margin: 6px 0 0; font-family: Cinzel, serif; font-size: 8pt; letter-spacing: .18em; text-transform: uppercase; color: #8a5f2c; }
-.contact { margin: 0; text-align: right; font-size: 8.6pt; line-height: 1.5; color: #4a3d52; }
+.contact { flex: none; white-space: nowrap; margin: 0; text-align: right; font-size: 8.6pt; line-height: 1.5; color: #4a3d52; }
 .contact a { color: inherit; text-decoration: none; }
 h2 { margin: 16px 0 8px; font-family: Cinzel, serif; font-weight: 400; font-size: 9pt; letter-spacing: .24em; text-transform: uppercase; color: #8a5f2c; display: flex; align-items: center; gap: 10px; }
 h2::after { content: ''; flex: 1; height: 1px; background: #e2cfb3; }
@@ -56,21 +58,34 @@ h4 { margin: 4px 0 1px; font-size: 10.4pt; font-weight: 500; color: #3c2c47; }
 ul { margin: 2px 0 0; padding-left: 15px; }
 li { margin: 1.5px 0; padding-left: 2px; }
 li::marker { content: '◆  '; color: #b98a4e; font-size: 6pt; }
-.skills { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px 16px; }
+.skills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px 18px; }
+.id { display: flex; align-items: center; gap: 16px; }
+.photo { width: 74px; height: 74px; border-radius: 50%; object-fit: cover; border: 1.5px solid #b98a4e; padding: 2px; }
+.edu { display: grid; gap: 5px; }
+.edu div { display: flex; justify-content: space-between; gap: 16px; align-items: baseline; }
+.edu strong { font-weight: 500; color: #2b1838; }
+.edu span.meta { white-space: nowrap; font-family: Cinzel, serif; font-size: 7.6pt; letter-spacing: .12em; text-transform: uppercase; color: #6b5b70; }
+.ach strong { font-weight: 500; color: #2b1838; }
+.ach p { margin: 0 0 4px; }
 .skills h4 { margin: 0 0 2px; font-family: Cinzel, serif; font-weight: 400; font-size: 7.6pt; letter-spacing: .16em; text-transform: uppercase; color: #8a5f2c; }
 .skills p { margin: 0; font-size: 9.6pt; }
 </style></head><body>
 <div class="top">
-  <div><h1>${esc(R.name)}</h1><p class="title">${esc(R.title)}</p></div>
+  <div class="id"><img class="photo" src="${pathToFileURL(PHOTO).href}" alt=""><div><h1>${esc(R.name)}</h1><p class="title">${esc(R.title)}</p></div></div>
   <p class="contact">
-    <a href="mailto:${R.contact.email}">${R.contact.email}</a> · ${esc(R.contact.phone)}<br>
+    <a href="mailto:${R.contact.email}">${R.contact.email}</a><br>
+    ${esc(R.contact.phone)} · Pune, India<br>
     <a href="${R.contact.portfolioUrl}">${R.contact.portfolio}</a><br>
-    <a href="${R.contact.artstationUrl}">${R.contact.artstation}</a> · <a href="${R.contact.behanceUrl}">${R.contact.behance}</a><br>
-    ${esc(R.location)}
+    <a href="${R.contact.artstationUrl}">${R.contact.artstation}</a><br>
+    <a href="${R.contact.behanceUrl}">${R.contact.behance}</a>
   </p>
 </div>
 <h2>Profile</h2><p class="summary">${esc(R.summary)}</p>
 <h2>Experience</h2>${jobs}
+<h2>Education</h2>
+<div class="edu">${R.education.map((e) => `<div><span><strong>${esc(e.detail)}</strong>, ${esc(e.school)}</span><span class="meta">${esc(e.dates)} · ${esc(e.result)}</span></div>`).join('')}</div>
+<h2>Achievements</h2>
+<div class="ach">${R.achievements.map((a) => `<p><strong>${esc(a.title)}.</strong> ${esc(a.text)}</p>`).join('')}</div>
 <h2>Skills</h2>
 <div class="skills">${R.skills.map((s) => `<div><h4>${esc(s.group)}</h4><p>${s.items.map(esc).join(' · ')}</p></div>`).join('')}</div>
 </body></html>`;
@@ -91,6 +106,8 @@ const GOLD = '8A5F2C';
 const INK = '2B1838';
 const MUTED = '6B5B70';
 const FONT = 'Garamond';
+const NONE = { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' };
+const NO_BORDERS = { top: NONE, bottom: NONE, left: NONE, right: NONE };
 
 const heading = (text) => new Paragraph({
   spacing: { before: 280, after: 100 },
@@ -106,8 +123,20 @@ const link = (text, url) => new ExternalHyperlink({ link: url, children: [new Te
 const sep = () => new TextRun({ text: '  ·  ', font: FONT, size: 19, color: MUTED });
 
 const body = [
-  new Paragraph({ children: [new TextRun({ text: R.name, font: FONT, size: 52, bold: true, color: INK })] }),
-  new Paragraph({ spacing: { after: 80 }, children: [new TextRun({ text: R.title.toUpperCase(), font: FONT, size: 18, color: GOLD, characterSpacing: 40 })] }),
+  new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    borders: { top: NONE, bottom: NONE, left: NONE, right: NONE, insideHorizontal: NONE, insideVertical: NONE },
+    rows: [new TableRow({ children: [
+      new TableCell({ width: { size: 1500, type: WidthType.DXA }, verticalAlign: VerticalAlign.CENTER, borders: NO_BORDERS, children: [
+        new Paragraph({ children: [new ImageRun({ type: 'jpg', data: await readFile(PHOTO), transformation: { width: 82, height: 82 } })] }),
+      ] }),
+      new TableCell({ verticalAlign: VerticalAlign.CENTER, borders: NO_BORDERS, children: [
+        new Paragraph({ children: [new TextRun({ text: R.name, font: FONT, size: 52, bold: true, color: INK })] }),
+        new Paragraph({ children: [new TextRun({ text: R.title.toUpperCase(), font: FONT, size: 18, color: GOLD, characterSpacing: 40 })] }),
+      ] }),
+    ] })],
+  }),
+  new Paragraph({ spacing: { after: 40 }, children: [] }),
   new Paragraph({ children: [link(R.contact.email, `mailto:${R.contact.email}`), sep(), new TextRun({ text: R.contact.phone, font: FONT, size: 19, color: MUTED })] }),
   new Paragraph({ children: [new TextRun({ text: R.location, font: FONT, size: 19, color: MUTED })] }),
   new Paragraph({ children: [link(R.contact.portfolio, R.contact.portfolioUrl), sep(), link(R.contact.artstation, R.contact.artstationUrl), sep(), link(R.contact.behance, R.contact.behanceUrl)] }),
@@ -131,6 +160,25 @@ for (const job of R.experience) {
     body.push(new Paragraph({ spacing: { before: 60, after: 20 }, children: [new TextRun({ text: proj.name, font: FONT, size: 21, bold: true, color: '3C2C47' })] }));
     body.push(...bullets(proj.points));
   }
+}
+body.push(heading('Education'));
+for (const e of R.education) {
+  body.push(new Paragraph({
+    spacing: { after: 50 },
+    tabStops: [{ type: TabStopType.RIGHT, position: 9600 }],
+    children: [
+      new TextRun({ text: e.detail, font: FONT, size: 21, bold: true, color: INK }),
+      new TextRun({ text: `, ${e.school}`, font: FONT, size: 21 }),
+      new TextRun({ text: `\t${e.dates}  ·  ${e.result}`, font: FONT, size: 18, color: MUTED }),
+    ],
+  }));
+}
+body.push(heading('Achievements'));
+for (const a of R.achievements) {
+  body.push(new Paragraph({ spacing: { after: 50 }, children: [
+    new TextRun({ text: `${a.title}. `, font: FONT, size: 21, bold: true, color: INK }),
+    new TextRun({ text: a.text, font: FONT, size: 21 }),
+  ] }));
 }
 body.push(heading('Skills'));
 for (const s of R.skills) {
