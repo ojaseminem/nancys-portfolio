@@ -667,6 +667,8 @@ h1, h2, h3, p { margin: 0; }
   border: 1px solid var(--gold-300);
 }
 .emblem__glyph { position: relative; width: 34px; height: 34px; color: #fff4e2; filter: drop-shadow(0 0 6px rgba(255, 230, 255, .8)); }
+.emblem:has(.emblem__photo)::before { display: none; }
+.emblem__photo { position: relative; width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 1px solid var(--gold-300); padding: 2px; background: var(--plum-900); box-shadow: 0 0 0 3px rgba(26, 16, 31, .9), 0 0 22px rgba(226, 189, 128, .35); }
 .emblem::after {
   content: '';
   position: absolute;
@@ -1391,6 +1393,7 @@ body.is-loading .panels { opacity: 0; transform: translateX(24px); }
   .emblem { width: 76px; height: 76px; }
   .emblem::before { width: 48px; height: 48px; }
   .emblem__glyph { width: 28px; height: 28px; }
+  .emblem__photo { width: 50px; height: 50px; }
   .availability { margin-bottom: 14px; }
   .stat { padding: 8px 2px; }
   .ghost-btn { margin-top: 12px; }
@@ -1401,7 +1404,7 @@ body.is-loading .panels { opacity: 0; transform: translateX(24px); }
   .name { font-size: 34px; }
   .stat { padding: 7px 2px; }
   .cta { margin-top: 16px; }
-  .prose--profile p + p { display: none; }
+  .prose--profile .p-more { display: none; }
   .prose--profile p { font-size: 15.5px; }
 }
 @media (max-width: 1280px) and (min-width: 1000px) {
@@ -1514,4 +1517,5 @@ body.is-loading .panels { opacity: 0; transform: translateX(24px); }
   .emblem { width: 76px; height: 76px; }
   .emblem::before { width: 48px; height: 48px; }
   .emblem__glyph { width: 28px; height: 28px; }
+  .emblem__photo { width: 50px; height: 50px; }
 }

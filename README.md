@@ -1,6 +1,6 @@
 # Rajnandini Chavan | Portfolio
 
-**Live site:** https://ojaseminem.github.io/nancys-portfolio/
+**Live site:** https://rajnandini-chavan.in/
 
 [![Site status](https://github.com/ojaseminem/nancys-portfolio/actions/workflows/deploy.yml/badge.svg?branch=main&event=push)](https://github.com/ojaseminem/nancys-portfolio/actions/workflows/deploy.yml)
 [![Total visits](https://rajnandini.goatcounter.com/counter/TOTAL.svg)](https://rajnandini.goatcounter.com)
@@ -27,8 +27,8 @@ Visitors on a computer get a short cinematic intro and a mouse parallax effect, 
 
 Each section has its own link, so you can send someone straight to it:
 
-- https://ojaseminem.github.io/nancys-portfolio/#works
-- https://ojaseminem.github.io/nancys-portfolio/#contact
+- https://rajnandini-chavan.in/#works
+- https://rajnandini-chavan.in/#contact
 
 ---
 
@@ -93,9 +93,9 @@ Open your dashboard at https://rajnandini.goatcounter.com and sign in.
 
 Add `?ref=` and a label to the link when you share it somewhere. The label shows up under **Referrers**:
 
-- On LinkedIn: `https://ojaseminem.github.io/nancys-portfolio/?ref=linkedin`
-- In an application to a studio: `https://ojaseminem.github.io/nancys-portfolio/?ref=studio-name`
-- On a résumé PDF: `https://ojaseminem.github.io/nancys-portfolio/?ref=resume`
+- On LinkedIn: `https://rajnandini-chavan.in/?ref=linkedin`
+- In an application to a studio: `https://rajnandini-chavan.in/?ref=studio-name`
+- On a résumé PDF: `https://rajnandini-chavan.in/?ref=resume`
 
 That way you can see which applications led someone to actually look at the portfolio.
 
@@ -114,6 +114,22 @@ These numbers only cover people looking at the code on GitHub. Visitors to the p
 GitHub only keeps 14 days of traffic history, so check it regularly if you want to keep track.
 
 ---
+
+## Domain
+
+The site lives at **https://rajnandini-chavan.in** (bought on GoDaddy, hosted free on GitHub Pages). The old address, ojaseminem.github.io/nancys-portfolio, forwards to it automatically.
+
+DNS records at GoDaddy (Domain → DNS → DNS Records):
+
+| Type | Name | Value |
+| --- | --- | --- |
+| A | @ | 185.199.108.153 |
+| A | @ | 185.199.109.153 |
+| A | @ | 185.199.110.153 |
+| A | @ | 185.199.111.153 |
+| CNAME | www | ojaseminem.github.io |
+
+In GitHub: **Settings → Pages → Custom domain** is set to `rajnandini-chavan.in`, with **Enforce HTTPS** ticked.
 
 ## Is the site up to date?
 

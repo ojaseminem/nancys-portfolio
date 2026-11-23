@@ -8,8 +8,8 @@ export const RESUME = {
   contact: {
     email: 'rajnandinichavan612@gmail.com',
     phone: '+91 93737 77294',
-    portfolio: 'ojaseminem.github.io/nancys-portfolio',
-    portfolioUrl: 'https://ojaseminem.github.io/nancys-portfolio/?ref=resume',
+    portfolio: 'rajnandini-chavan.in',
+    portfolioUrl: 'https://rajnandini-chavan.in/?ref=resume',
     artstation: 'artstation.com/rajnandinichavan1',
     artstationUrl: 'https://www.artstation.com/rajnandinichavan1',
     behance: 'behance.net/rajnandchavan1',
