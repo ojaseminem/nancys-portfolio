@@ -1252,6 +1252,12 @@ a.ci__main:hover { color: var(--gold-100); }
   transform: rotate(45deg);
 }
 .resume__skills { display: grid; gap: 14px; }
+.hl-card { display: grid; width: 100%; text-align: left; border: 1px solid var(--line); background: var(--panel-bg); transition: border-color .3s, transform .5s var(--ease-out); }
+.hl-card:hover { border-color: var(--gold-300); transform: translateY(-2px); }
+.hl-card img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.hl-card__body { display: grid; gap: 6px; padding: 14px 16px 16px; }
+.hl-card strong { font-family: var(--f-name); font-weight: 500; font-size: 26px; line-height: 1.1; color: var(--gold-100); }
+.hl-card__text { font-size: 15px; color: var(--text-2); line-height: 1.45; }
 .edu-list { display: grid; gap: 12px; }
 .edu { display: flex; justify-content: space-between; gap: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line-2); }
 .edu div { display: grid; gap: 2px; }

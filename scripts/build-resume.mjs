@@ -47,6 +47,10 @@ h1 { margin: 0; font-family: Cormorant, Georgia, serif; font-weight: 600; font-s
 h2 { margin: 16px 0 8px; font-family: Cinzel, serif; font-weight: 400; font-size: 9pt; letter-spacing: .24em; text-transform: uppercase; color: #8a5f2c; display: flex; align-items: center; gap: 10px; }
 h2::after { content: ''; flex: 1; height: 1px; background: #e2cfb3; }
 .summary { margin: 0; }
+.hl { margin: 0; padding: 8px 12px; border-left: 2px solid #b98a4e; background: #faf4ea; }
+.hl strong { font-family: Cormorant, serif; font-weight: 600; font-size: 13pt; color: #2b1838; }
+.hlk { font-family: Cinzel, serif; font-size: 7.4pt; letter-spacing: .14em; text-transform: uppercase; color: #8a5f2c; margin-left: 6px; }
+.hl a { color: #8a5f2c; }
 .job { margin-bottom: 11px; break-inside: avoid-page; }
 .job header { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
 h3 { margin: 0; font-family: Cormorant, Georgia, serif; font-weight: 600; font-size: 14pt; color: #2b1838; }
@@ -81,6 +85,7 @@ li::marker { content: '◆  '; color: #b98a4e; font-size: 6pt; }
   </p>
 </div>
 <h2>Profile</h2><p class="summary">${esc(R.summary)}</p>
+<h2>Featured project</h2><p class="hl"><strong>${esc(R.highlight.name)}</strong> <span class="hlk">${esc(R.highlight.kind)}</span><br>${esc(R.highlight.text)} <a href="${R.highlight.link}">Watch the film</a></p>
 <h2>Experience</h2>${jobs}
 <h2>Education</h2>
 <div class="edu">${R.education.map((e) => `<div><span><strong>${esc(e.detail)}</strong>, ${esc(e.school)}</span><span class="meta">${esc(e.dates)} · ${esc(e.result)}</span></div>`).join('')}</div>
@@ -142,6 +147,15 @@ const body = [
   new Paragraph({ children: [link(R.contact.portfolio, R.contact.portfolioUrl), sep(), link(R.contact.artstation, R.contact.artstationUrl), sep(), link(R.contact.behance, R.contact.behanceUrl)] }),
   heading('Profile'),
   new Paragraph({ children: [new TextRun({ text: R.summary, font: FONT, size: 21 })] }),
+  heading('Featured project'),
+  new Paragraph({ children: [
+    new TextRun({ text: R.highlight.name, font: FONT, size: 23, bold: true, color: INK }),
+    new TextRun({ text: `  ·  ${R.highlight.kind}`, font: FONT, size: 19, color: GOLD }),
+  ] }),
+  new Paragraph({ children: [
+    new TextRun({ text: `${R.highlight.text} `, font: FONT, size: 21 }),
+    new ExternalHyperlink({ link: R.highlight.link, children: [new TextRun({ text: 'Watch the film', font: FONT, size: 21, color: GOLD, underline: {} })] }),
+  ] }),
   heading('Experience'),
 ];
 for (const job of R.experience) {

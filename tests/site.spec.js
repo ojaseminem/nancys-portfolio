@@ -338,6 +338,10 @@ test('resume tab shows experience and offers PDF and DOCX downloads', async ({ p
   await expect(page.locator('#resume')).toContainText('Cimpress');
   await expect(page.locator('#resume .edu')).toHaveCount(3);
   await expect(page.locator('#resume .ach')).toContainText('IndiaSkills');
+  await expect(page.locator('#resume .hl-card')).toContainText('The Last Jewel of Peshwa');
+  await page.locator('#resume .hl-card').click();
+  await expect(page.locator('#viewerTitle')).toHaveText('The Last Jewel of Peshwa');
+  await page.keyboard.press('Escape');
   // check the file signatures (the local preview server does not label .docx; GitHub Pages does)
   for (const [ext, magic] of [['pdf', '%PDF'], ['docx', 'PK']]) {
     const link = page.locator(`#resume a.dl[href$=".${ext}"]`);
@@ -367,7 +371,9 @@ test('her feet stay on the podium at common desktop window sizes', async ({ brow
     const page = await context.newPage();
     await page.route('https://gc.zgo.at/**', (r) => r.fulfill({ body: '' }));
     await page.goto('http://localhost:4173/');
-    await page.waitForTimeout(300);
+    // measure only once the entrance state is gone (it nudges the figure down while loading)
+    await expect(page.locator('body')).not.toHaveClass(/is-loading/);
+    await page.waitForTimeout(100);
     const { feet, pod } = await page.evaluate(() => {
       const img = document.querySelector('.hero-char__img').getBoundingClientRect();
       const p = document.querySelector('.podium').getBoundingClientRect();

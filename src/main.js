@@ -611,6 +611,18 @@ function workCard(p) {
     job.points ? bullets(job.points) : '',
     ...(job.projects || []).map((proj) => el('div', { class: 'tl__proj' }, el('h4', { text: proj.name }), bullets(proj.points))),
   )));
+  {
+    const h = RESUME.highlight;
+    const btn = el('button', { type: 'button', class: 'hl-card' },
+      el('img', { src: './assets/works/mystery-cover.webp', alt: '' }),
+      el('span', { class: 'hl-card__body' },
+        el('span', { class: 'work__tag', text: h.kind }),
+        el('strong', { text: h.name }),
+        el('span', { class: 'hl-card__text', text: h.text }),
+        el('span', { class: 'work__view' }, 'Watch the film ', icon('i-arrow'))));
+    btn.addEventListener('click', () => openProject('murder-mystery'));
+    $('#resumeHighlight').replaceChildren(btn);
+  }
   $('#resumeEducation').replaceChildren(...RESUME.education.map((e) => el('li', { class: 'edu' },
     el('div', {}, el('strong', { text: e.detail }), el('span', { text: e.school })),
     el('p', { class: 'edu__meta' }, el('span', { text: e.dates }), el('span', { class: 'edu__result', text: e.result })))));

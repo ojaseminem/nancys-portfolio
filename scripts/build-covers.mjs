@@ -32,7 +32,7 @@ html, body { margin: 0; }
 .pin { fill: #f0c87a; }
 .txt { position: absolute; ${layout === 'wide' ? 'left: 110px; top: 50%; transform: translateY(-50%); text-align: left;' : 'left: 0; right: 0; bottom: 120px; text-align: center;'} color: #f4dfb4; }
 .kick { font-family: Cinzel; font-weight: 400; font-size: ${layout === 'wide' ? 22 : 26}px; letter-spacing: .42em; color: #d64545; margin: 0 0 18px; }
-h1 { margin: 0; font-family: Cinzel; font-weight: 600; font-size: ${layout === 'wide' ? 104 : 96}px; line-height: .95; letter-spacing: .04em; text-shadow: 0 4px 30px rgba(0,0,0,.6); }
+h1 { margin: 0; font-family: Cinzel; font-weight: 600; font-size: ${layout === 'wide' ? 86 : 72}px; line-height: 1.02; letter-spacing: .04em; text-shadow: 0 4px 30px rgba(0,0,0,.6); }
 .sub { margin: 22px 0 0; font-family: Cormorant; font-style: italic; font-size: ${layout === 'wide' ? 34 : 36}px; color: #e7c08a; }
 .rule { width: 220px; height: 1px; background: linear-gradient(90deg, #e7c08a, transparent); margin: 26px ${layout === 'wide' ? '0' : 'auto'} 0; }
 .frame { position: absolute; inset: 22px; border: 1px solid rgba(231, 192, 138, .35); }
@@ -46,7 +46,7 @@ h1 { margin: 0; font-family: Cinzel; font-weight: 600; font-size: ${layout === '
 </svg>
 <div class="grain"></div>
 <div class="frame"></div>
-<div class="txt"><p class="kick">CASE FILE</p><h1>Murder<br>Mystery</h1><p class="sub">A board game of clues and suspects</p><div class="rule"></div></div>
+<div class="txt"><p class="kick">A MURDER MYSTERY</p><h1>The Last Jewel<br>of Peshwa</h1><p class="sub">Board game design · client work</p><div class="rule"></div></div>
 </div></body></html>`;
 
 const browser = await chromium.launch();

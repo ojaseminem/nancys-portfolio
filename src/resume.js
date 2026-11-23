@@ -116,6 +116,13 @@ export const RESUME = {
     },
   ],
 
+  highlight: {
+    name: 'The Last Jewel of Peshwa',
+    kind: 'Murder mystery board game · client work',
+    text: 'Designed a murder mystery board game for a client, from the case, clues and suspects to the visual design of the board, cards and printed components.',
+    link: 'https://www.youtube.com/watch?v=wQ2zmSk6-lI',
+  },
+
   education: [
     {
       school: 'Bharati Vidyapeeth',

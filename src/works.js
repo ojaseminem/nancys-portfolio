@@ -11,10 +11,10 @@ export const PROJECTS = [
   {
     id: 'murder-mystery',
     featured: true,
-    title: 'Murder Mystery Board Game',
-    tag: 'Game design · Board game',
+    title: 'The Last Jewel of Peshwa',
+    tag: 'Client work · Murder mystery board game',
     filters: ['game', '2d'],
-    desc: 'A murder mystery board game designed end to end: the case, the clues and suspects, and the visual design of the board, cards and printed components. Watch the walkthrough film.',
+    desc: 'A murder mystery board game designed for a client: the case, its clues and suspects, and the visual design of the board, cards and printed components. Watch the project film.',
     cover: `${A}mystery-cover.webp`,
     link: { href: 'https://www.youtube.com/watch?v=wQ2zmSk6-lI', label: 'Watch on YouTube', icon: 'youtube' },
     media: [
