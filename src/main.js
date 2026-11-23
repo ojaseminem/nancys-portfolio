@@ -38,7 +38,7 @@ const prefs = {
 const SECTIONS = ['profile', 'works', 'skills', 'resume', 'contact'];
 const ALIASES = { about: 'resume' }; // old links keep working
 const TITLES = {
-  profile: 'Rajnandini Chavan | UI/UX Designer & Character Artist',
+  profile: 'Rajnandini Chavan | UI/UX Designer & 2D/3D Generalist',
   works: 'Works | Rajnandini Chavan',
   skills: 'Skills | Rajnandini Chavan',
   resume: 'Resume | Rajnandini Chavan',

@@ -3,7 +3,7 @@
 
 export const RESUME = {
   name: 'Rajnandini Chavan',
-  title: 'UI/UX & Visual Designer · 3D & Character Artist',
+  title: 'UI/UX & Visual Designer · 2D/3D Generalist',
   location: 'Pune, India · open to remote or on-site in Pune',
   contact: {
     email: 'rajnandinichavan612@gmail.com',
@@ -130,7 +130,7 @@ export const RESUME = {
       result: '95%',
     },
     {
-      school: 'Mahatma Bashveshwar Vidyalaya, Omerga',
+      school: 'Mahatma Basaveshwar Vidyalaya, Omerga',
       detail: 'Secondary School (10th)',
       dates: '2018 – 2019',
       result: '97.8%',
@@ -149,8 +149,7 @@ export const RESUME = {
     { group: 'Visual & brand', items: ['Iconography', 'Illustration', 'Logo & identity', 'Exhibition graphics', 'Print collateral'] },
     { group: '3D & motion', items: ['3D modelling', 'Sculpting & retopology', 'Texturing', 'Animation', 'Tactile & physical design'] },
     { group: 'Design tools', items: ['Figma', 'Adobe Photoshop', 'Adobe Illustrator'] },
-    { group: '3D tools', items: ['Blender', 'ZBrush', 'Autodesk Maya', 'Substance Painter'] },
-    { group: 'Production', items: ['StitchX'] },
+    { group: 'Creative & 3D tools', items: ['Blender', 'ZBrush', 'Autodesk Maya', 'Substance Painter', 'StitchX'] },
   ],
 };
 

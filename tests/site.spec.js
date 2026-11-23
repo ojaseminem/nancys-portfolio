@@ -94,7 +94,7 @@ test('copy button copies the email', async ({ page, context, browserName }) => {
 
 test('project viewer opens, pages through images and closes', async ({ page }) => {
   await page.goto('/#works');
-  await expect(page.locator('.work')).toHaveCount(5);
+  await expect(page.locator('.work')).toHaveCount(6);
   await page.locator('.work[data-project="ursula"] .work__view').click();
   const viewer = page.locator('#viewer');
   const img = page.locator('#viewerMedia img');
@@ -144,8 +144,7 @@ test('YouTube films load only after pressing play', async ({ page }) => {
   const yt = [];
   page.on('request', (r) => (r.url().includes('youtube') ? yt.push(r.url()) : null));
   await page.goto('/#works');
-  const featured = page.locator('.work--featured');
-  await expect(featured).toHaveAttribute('data-project', 'meta-quest');
+  const featured = page.locator('.work--featured[data-project="meta-quest"]');
   await featured.locator('.work__view').click();
   await expect(page.locator('#viewerTitle')).toHaveText('Meta Quest 3 Campaign');
   await expect(page.locator('#viewerLink')).toHaveAttribute('href', 'https://www.youtube.com/watch?v=miQX34ESRho');
@@ -162,15 +161,15 @@ test('YouTube films load only after pressing play', async ({ page }) => {
 test('filters narrow the project list', async ({ page }) => {
   await page.goto('/#works');
   const visible = page.locator('.work:visible');
-  await expect(visible).toHaveCount(5);
+  await expect(visible).toHaveCount(6);
   await page.locator('.chip[data-filter="motion"]').click();
   await expect(page.locator('.chip[data-filter="motion"]')).toHaveAttribute('aria-pressed', 'true');
   await expect(visible).toHaveCount(2);
-  await page.locator('.chip[data-filter="2d"]').click();
+  await page.locator('.chip[data-filter="game"]').click();
   await expect(visible).toHaveCount(1);
-  await expect(visible.first()).toHaveAttribute('data-project', 'vaishnavi');
+  await expect(visible.first()).toHaveAttribute('data-project', 'murder-mystery');
   await page.locator('.chip[data-filter="all"]').click();
-  await expect(visible).toHaveCount(5);
+  await expect(visible).toHaveCount(6);
 });
 
 test('works cards link to the right pages', async ({ page }) => {
@@ -178,6 +177,8 @@ test('works cards link to the right pages', async ({ page }) => {
   await expect(page.locator('.work[data-project="ursula"] .work__ext')).toHaveAttribute('href', 'https://www.artstation.com/artwork/Z0P43x');
   await expect(page.locator('.work[data-project="swan"] .work__ext')).toHaveAttribute('href', 'https://www.artstation.com/artwork/AoQdyW');
   await expect(page.locator('.work[data-project="meta-quest"] .work__ext')).toHaveAttribute('href', 'https://www.youtube.com/watch?v=miQX34ESRho');
+  await expect(page.locator('.work[data-project="murder-mystery"] .work__ext')).toHaveAttribute('href', 'https://www.youtube.com/watch?v=wQ2zmSk6-lI');
+  await expect(page.locator('.work').first()).toHaveAttribute('data-project', 'murder-mystery');
 });
 
 test('keyboard arrows move between tabs', async ({ page, isMobile }) => {
@@ -358,4 +359,25 @@ test('profile shows the short intro and no discipline circles', async ({ page })
   await expect(page.locator('#profile .prose--profile p')).toHaveCount(2);
   await expect(page.locator('.disciplines')).toHaveCount(0);
   await expect(page.locator('#profile .stats')).toContainText('Open to work');
+});
+
+test('her feet stay on the podium at common desktop window sizes', async ({ browser }) => {
+  for (const [width, height] of [[1920, 1080], [1920, 960], [1920, 900], [1536, 730], [1366, 768], [1440, 900], [1280, 720], [2560, 1080], [2560, 1440], [1024, 768]]) {
+    const context = await browser.newContext({ viewport: { width, height }, reducedMotion: 'reduce' });
+    const page = await context.newPage();
+    await page.route('https://gc.zgo.at/**', (r) => r.fulfill({ body: '' }));
+    await page.goto('http://localhost:4173/');
+    await page.waitForTimeout(300);
+    const { feet, pod } = await page.evaluate(() => {
+      const img = document.querySelector('.hero-char__img').getBoundingClientRect();
+      const p = document.querySelector('.podium').getBoundingClientRect();
+      return { feet: img.bottom, pod: { top: p.top, h: p.height } };
+    });
+    // feet land roughly in the middle of the podium's top face, and are on screen
+    const where = (feet - pod.top) / pod.h;
+    expect(where, `${width}x${height}`).toBeGreaterThan(0.4);
+    expect(where, `${width}x${height}`).toBeLessThan(0.65);
+    expect(feet, `${width}x${height} feet visible`).toBeLessThanOrEqual(height);
+    await context.close();
+  }
 });

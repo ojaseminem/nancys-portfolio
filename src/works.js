@@ -9,6 +9,19 @@ const A = './assets/works/';
 
 export const PROJECTS = [
   {
+    id: 'murder-mystery',
+    featured: true,
+    title: 'Murder Mystery Board Game',
+    tag: 'Game design · Board game',
+    filters: ['game', '2d'],
+    desc: 'A murder mystery board game designed end to end: the case, the clues and suspects, and the visual design of the board, cards and printed components. Watch the walkthrough film.',
+    cover: `${A}mystery-cover.webp`,
+    link: { href: 'https://www.youtube.com/watch?v=wQ2zmSk6-lI', label: 'Watch on YouTube', icon: 'youtube' },
+    media: [
+      { type: 'youtube', id: 'wQ2zmSk6-lI', poster: `${A}mystery-cover.webp`, caption: 'Project film. The game, its components and how it plays.' },
+    ],
+  },
+  {
     id: 'meta-quest',
     featured: true,
     title: 'Meta Quest 3 Campaign',
@@ -88,6 +101,7 @@ export const PROJECTS = [
 export const FILTERS = [
   { id: 'all', label: 'All' },
   { id: '3d', label: '3D' },
+  { id: 'game', label: 'Game' },
   { id: 'motion', label: 'Motion' },
   { id: '2d', label: '2D' },
 ];

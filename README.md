@@ -7,7 +7,7 @@
 
 **Analytics dashboard:** https://rajnandini.goatcounter.com
 
-The portfolio of Rajnandini Chavan, a UI/UX designer and character artist based in Pune, India. It is designed like a fantasy game character screen. Her character stands on a glowing pedestal, and a gilded menu opens her profile, work, skills, story and contact details.
+The portfolio of Rajnandini Chavan, a UI/UX designer and 2D/3D generalist based in Pune, India. It is designed like a fantasy game character screen. Her character stands on a glowing pedestal, and a gilded menu opens her profile, work, skills, story and contact details.
 
 ![Preview](public/og-image.jpg)
 
@@ -18,7 +18,7 @@ The portfolio of Rajnandini Chavan, a UI/UX designer and character artist based 
 | Section | What's in it |
 | --- | --- |
 | **Profile** | Name, role, availability, a short two-paragraph introduction, discipline, what she is looking for and where she is open to work |
-| **Works** | Five projects: Meta Quest 3 Campaign (featured, with two YouTube films), Ursula, Blossom Lamp (animation), Swan & Lotus Relief and Vaishnavi. Filters for 3D, Motion and 2D. Cards preview the process or play the animation on hover, and each opens a full-screen viewer with images, videos and a link to the project page |
+| **Works** | Six projects: Murder Mystery Board Game and Meta Quest 3 Campaign (featured, with YouTube films), Ursula, Blossom Lamp (animation), Swan & Lotus Relief and Vaishnavi. Filters for 3D, Game, Motion and 2D. Cards preview the process or play the animation on hover, and each opens a full-screen viewer with images, videos and a link to the project page |
 | **Skills** | UI/UX and visual skills, art skills, and craft strengths |
 | **Resume** | Professional summary, full work experience as a timeline, toolkit, and one-click downloads of the resume as PDF and Word (DOCX) |
 | **Contact** | Email, phone, ArtStation, Behance and location, with one-tap copy buttons |
@@ -61,7 +61,7 @@ The site has visitor analytics built in using **[GoatCounter](https://www.goatco
 | `view-project-…` | Opened a project in the full-screen viewer (for example `view-project-ursula`) |
 | `play-video-…` | Pressed play on a YouTube film inside the viewer |
 | `download-resume-pdf` / `download-resume-docx` | Downloaded the resume |
-| `filter-…` | Used a Works filter (`filter-3d`, `filter-motion`, `filter-2d`) |
+| `filter-…` | Used a Works filter (`filter-3d`, `filter-game`, `filter-motion`, `filter-2d`) |
 | `intro-skipped` | Skipped the intro |
 | `setting-motion-off` / `setting-motion-on` | Turned the ambient motion off or on |
 
@@ -143,7 +143,7 @@ Send the changes to Ojas, who maintains the site.
 
 ## Contact
 
-**Rajnandini Chavan**, UI/UX Designer and Character Artist
+**Rajnandini Chavan**, UI/UX Designer and 2D/3D Generalist
 
 - Email: rajnandinichavan612@gmail.com
 - ArtStation: https://www.artstation.com/rajnandinichavan1
