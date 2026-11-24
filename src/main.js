@@ -470,6 +470,55 @@ function renderMedia(item) {
     });
     return btn;
   }
+  if (item.type === 'compare') {
+    // Reference vs recreation: drag the line, click anywhere, or use the arrow keys on the handle.
+    const wrap = el('div', { class: 'cmp', style: '--pos: 50%' });
+    const before = el('img', { class: 'cmp__img', src: item.before, alt: item.beforeAlt, draggable: 'false' });
+    const after = el('img', { class: 'cmp__img cmp__after', src: item.after, alt: item.afterAlt, draggable: 'false' });
+    const handle = el('div', {
+      class: 'cmp__handle', role: 'slider', tabindex: '0',
+      'aria-label': 'Drag to compare the reference with the recreation',
+      'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-valuenow': '50',
+    }, el('span', { class: 'cmp__knob', 'aria-hidden': 'true' }, icon('i-arrow'), icon('i-arrow')));
+    const tags = [
+      el('span', { class: 'cmp__tag cmp__tag--l', text: item.beforeLabel || 'Reference' }),
+      el('span', { class: 'cmp__tag cmp__tag--r', text: item.afterLabel || 'Recreation' }),
+    ];
+    wrap.append(before, after, handle, ...tags);
+    let pos = 50;
+    const set = (v) => {
+      pos = Math.max(0, Math.min(100, v));
+      wrap.style.setProperty('--pos', `${pos}%`);
+      handle.setAttribute('aria-valuenow', String(Math.round(pos)));
+    };
+    const fromEvent = (e) => {
+      const r = wrap.getBoundingClientRect();
+      set(((e.clientX - r.left) / r.width) * 100);
+    };
+    let dragging = false;
+    wrap.addEventListener('pointerdown', (e) => {
+      dragging = true;
+      wrap.setPointerCapture(e.pointerId);
+      fromEvent(e);
+      e.stopPropagation();
+    });
+    wrap.addEventListener('pointermove', (e) => dragging && fromEvent(e));
+    wrap.addEventListener('pointerup', () => { dragging = false; });
+    wrap.addEventListener('pointercancel', () => { dragging = false; });
+    wrap.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
+    wrap.addEventListener('touchend', (e) => e.stopPropagation());
+    handle.addEventListener('keydown', (e) => {
+      const step = e.shiftKey ? 10 : 2;
+      if (e.key === 'ArrowLeft') set(pos - step);
+      else if (e.key === 'ArrowRight') set(pos + step);
+      else if (e.key === 'Home') set(0);
+      else if (e.key === 'End') set(100);
+      else return;
+      e.preventDefault();
+      e.stopPropagation();
+    });
+    return wrap;
+  }
   return el('img', { src: item.src, alt: item.alt });
 }
 
@@ -496,8 +545,8 @@ function openProject(id) {
   viewer.classList.toggle('is-single', vProject.media.length < 2);
   vThumbs.replaceChildren(...vProject.media.map((item, n) => {
     const b = el('button', { type: 'button', class: `viewer__thumb${item.type !== 'image' ? ' is-video' : ''}`, 'aria-label': `Item ${n + 1}: ${item.caption.split('.')[0]}` },
-      el('img', { src: item.type === 'image' ? item.src : item.poster, alt: '', loading: 'lazy' }));
-    if (item.type !== 'image') b.append(el('span', { class: 'viewer__thumbplay' }, icon('i-play')));
+      el('img', { src: item.type === 'image' ? item.src : item.type === 'compare' ? item.thumb : item.poster, alt: '', loading: 'lazy' }));
+    if (item.type === 'video' || item.type === 'youtube') b.append(el('span', { class: 'viewer__thumbplay' }, icon('i-play')));
     b.addEventListener('click', () => showItem(n));
     return b;
   }));
@@ -511,7 +560,7 @@ $('.viewer__close').addEventListener('click', () => viewer.close());
 $('.viewer__nav--prev').addEventListener('click', () => showItem(vIndex - 1));
 $('.viewer__nav--next').addEventListener('click', () => showItem(vIndex + 1));
 viewer.addEventListener('keydown', (event) => {
-  if (event.target.closest('video, iframe')) return;
+  if (event.target.closest('video, iframe, .cmp__handle')) return;
   if (event.key === 'ArrowLeft') showItem(vIndex - 1);
   if (event.key === 'ArrowRight') showItem(vIndex + 1);
 });

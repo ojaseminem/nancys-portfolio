@@ -284,14 +284,26 @@ def ui_projects():
     for i, name in ((1, "home"), (0, "login")):
         save_webp(shots[i], f"works/solorize-{name}.webp", 90)
 
-    # AC Odyssey UI study
-    rec = Image.open(W / "ac-ui" / "recreation.png").convert("RGB")
-    save_webp(rec, "works/acui-recreation.webp", 88)
+    # AC Odyssey UI study: reference + her recreation at full size, plus a static split image
+    ref = Image.open(W / "ac-ui" / "reference.webp").convert("RGB")
+    rec = Image.open(W / "ac-ui" / "recreation-full.webp").convert("RGB").resize(ref.size, Image.LANCZOS)
+    save_webp(ref, "works/acui-reference.webp", 86)
+    save_webp(rec, "works/acui-recreation.webp", 86)
+    split = ref.copy()
+    mid = ref.width // 2
+    split.paste(rec.crop((mid, 0, ref.width, ref.height)), (mid, 0))
+    d = ImageDraw.Draw(split)
+    d.rectangle((mid - 2, 0, mid + 1, split.height), fill=(255, 244, 222))
+    cy = split.height // 2
+    d.ellipse((mid - 30, cy - 30, mid + 30, cy + 30), fill=(16, 20, 28), outline=(236, 199, 128), width=3)
+    d.polygon([(mid - 8, cy), (mid - 20, cy - 10), (mid - 20, cy + 10)], fill=(236, 199, 128))
+    d.polygon([(mid + 8, cy), (mid + 20, cy - 10), (mid + 20, cy + 10)], fill=(236, 199, 128))
+    save_webp(split, "works/acui-compare.webp", 86)
     sheet = Image.open(W / "ac-ui" / "ui-sheet.png").convert("RGB")
     save_webp(sheet, "works/acui-sheet.webp", 88)
-    rw, rh = rec.size
+    rw, rh = split.size  # card thumb centred on the divider: reference left, recreation right
     tw = int(rh * 0.6)
-    t = rec.crop(((rw - tw) // 2, 0, (rw + tw) // 2, rh)).resize((300, 500), Image.LANCZOS)
+    t = split.crop(((rw - tw) // 2, 0, (rw + tw) // 2, rh)).resize((300, 500), Image.LANCZOS)
     save_webp(t, "works/acui-thumb.webp", 84)
     sw2, sh2 = sheet.size  # inventory slot rows, framed portrait for the hover state
     t2 = sheet.crop((40, 370, 40 + 420, 370 + 700)).resize((300, 500), Image.LANCZOS)

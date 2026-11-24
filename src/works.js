@@ -82,6 +82,7 @@ export const PROJECTS = [
     hover: `${A}acui-process-thumb.webp`,
     link: { href: 'https://www.behance.net/rajnandchavan1', label: 'More on Behance', icon: 'behance' },
     media: [
+      { type: 'compare', before: `${A}acui-reference.webp`, after: `${A}acui-recreation.webp`, thumb: `${A}acui-compare.webp`, beforeAlt: 'Original in-game Assassin\'s Creed Odyssey inventory screen.', afterAlt: 'Her recreation of the inventory screen in Figma.', beforeLabel: 'Reference · in game', afterLabel: 'Recreation · Figma', caption: 'Reference vs recreation. Drag the line to compare the in-game screen with her Figma rebuild.' },
       { type: 'image', src: `${A}acui-recreation.webp`, alt: 'Recreated Assassin\'s Creed Odyssey inventory screen with Kassandra, gear slots and stats.', caption: 'Recreation. The full inventory screen rebuilt in Figma.' },
       { type: 'image', src: `${A}acui-sheet.webp`, alt: 'UI kit sheet of the recreated components: tabs, resources, item slots, badges, stats and prompts.', caption: 'UI kit. Every element split into a reusable component.' },
     ],

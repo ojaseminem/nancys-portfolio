@@ -410,7 +410,35 @@ test('UI projects open with their screens', async ({ page }) => {
   await expect(page.locator('#viewerThumbs button')).toHaveCount(4);
   await page.keyboard.press('Escape');
   await page.locator('.work[data-project="ac-ui"] .work__view').click();
-  await expect(page.locator('#viewerMedia img')).toHaveAttribute('src', /acui-recreation/);
-  await page.locator('#viewerThumbs button').nth(1).click();
+  await expect(page.locator('#viewerThumbs button')).toHaveCount(3);
+  await page.locator('#viewerThumbs button').nth(2).click();
   await expect(page.locator('#viewerMedia img')).toHaveAttribute('src', /acui-sheet/);
+});
+
+test('reference vs recreation slider moves with drag and keys', async ({ page, isMobile }) => {
+  await page.goto('/#works');
+  await page.locator('.work[data-project="ac-ui"] .work__view').click();
+  const cmp = page.locator('#viewerMedia .cmp');
+  await expect(cmp).toBeVisible();
+  await expect(cmp.locator('img.cmp__img')).toHaveCount(2);
+  for (const img of await cmp.locator('img').all()) {
+    await expect.poll(() => img.evaluate((i) => i.complete && i.naturalWidth > 0)).toBe(true);
+  }
+  const handle = cmp.locator('.cmp__handle');
+  await expect(handle).toHaveAttribute('aria-valuenow', '50');
+  const box = await cmp.boundingBox();
+  if (!isMobile) {
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width * 0.2, box.y + box.height / 2, { steps: 5 });
+    await page.mouse.up();
+    expect(Number(await handle.getAttribute('aria-valuenow'))).toBeLessThan(30);
+  }
+  await handle.focus();
+  await page.keyboard.press('End');
+  await expect(handle).toHaveAttribute('aria-valuenow', '100');
+  await page.keyboard.press('Shift+ArrowLeft');
+  await expect(handle).toHaveAttribute('aria-valuenow', '90');
+  // arrow keys on the slider must not page the viewer
+  await expect(page.locator('#viewerCount')).toHaveText('1 / 3');
 });
