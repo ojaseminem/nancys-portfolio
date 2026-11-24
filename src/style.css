@@ -933,6 +933,9 @@ h1, h2, h3, p { margin: 0; }
 .work__ext:hover { background: var(--gold-300); color: var(--ink); }
 
 .gallery-links { display: grid; gap: 12px; margin-top: 16px; }
+.hire { margin-top: 30px; padding-top: 22px; border-top: 1px solid var(--line-2); text-align: center; }
+.hire__line { color: var(--text-2); font-size: 16px; max-width: 34ch; margin: 0 auto; }
+.hire .cta { margin-top: 18px; }
 .gl {
   display: flex; align-items: center; gap: 16px;
   padding: 16px 18px;
@@ -1235,6 +1238,17 @@ a.ci__main:hover { color: var(--gold-100); }
 }
 .tl:first-child .tl__mark { background: var(--gold-300); }
 .tl__dates { font-family: var(--f-display); font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold-400); }
+/* Dates in a left column, entries to the right of the gold line */
+.timeline { --dcol: 74px; padding-left: 0; }
+.timeline::before { left: calc(var(--dcol) + 10px); }
+.tl { display: grid; grid-template-columns: var(--dcol) 1fr; column-gap: 22px; }
+.tl > * { grid-column: 2; }
+.tl > .tl__dates { grid-column: 1; grid-row: 1 / span 3; text-align: right; line-height: 1.5; padding-top: 4px; letter-spacing: .12em; }
+.tl > .tl__mark { grid-column: auto; grid-row: auto; left: calc(var(--dcol) + 6px); }
+.tl__dates span { display: block; }
+.tl__dates span:last-child { opacity: .75; }
+.sr-only { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (max-width: 420px) { .timeline { --dcol: 62px; } .tl { column-gap: 18px; } .tl > .tl__mark { left: calc(var(--dcol) + 4px); } .timeline::before { left: calc(var(--dcol) + 8px); } }
 .tl__org { margin-top: 2px; font-family: var(--f-name); font-weight: 500; font-size: 24px; line-height: 1.15; color: var(--gold-100); }
 .tl__place { font-family: var(--f-body); font-size: 15px; color: var(--text-3); }
 .tl__role { font-size: 15.5px; color: var(--gold-200); margin-bottom: 6px; }

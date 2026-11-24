@@ -605,7 +605,7 @@ function workCard(p) {
   const bullets = (points) => el('ul', { class: 'tl__points' }, ...points.map((t) => el('li', { text: t })));
   $('#resumeTimeline').replaceChildren(...RESUME.experience.map((job) => el('li', { class: 'tl' },
     el('span', { class: 'tl__mark', 'aria-hidden': 'true' }),
-    el('p', { class: 'tl__dates', text: job.dates }),
+    el('p', { class: 'tl__dates' }, ...job.dates.split(' – ').flatMap((d, i) => (i ? [el('span', { class: 'sr-only', text: ' to ' }), el('span', { text: d })] : [el('span', { text: d })]))),
     el('h3', { class: 'tl__org' }, job.org, job.place ? el('span', { class: 'tl__place', text: ` · ${job.place}` }) : ''),
     el('p', { class: 'tl__role', text: job.role }),
     job.points ? bullets(job.points) : '',

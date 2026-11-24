@@ -94,7 +94,7 @@ test('copy button copies the email', async ({ page, context, browserName }) => {
 
 test('project viewer opens, pages through images and closes', async ({ page }) => {
   await page.goto('/#works');
-  await expect(page.locator('.work')).toHaveCount(6);
+  await expect(page.locator('.work')).toHaveCount(8);
   await page.locator('.work[data-project="ursula"] .work__view').click();
   const viewer = page.locator('#viewer');
   const img = page.locator('#viewerMedia img');
@@ -161,15 +161,17 @@ test('YouTube films load only after pressing play', async ({ page }) => {
 test('filters narrow the project list', async ({ page }) => {
   await page.goto('/#works');
   const visible = page.locator('.work:visible');
-  await expect(visible).toHaveCount(6);
+  await expect(visible).toHaveCount(8);
   await page.locator('.chip[data-filter="motion"]').click();
   await expect(page.locator('.chip[data-filter="motion"]')).toHaveAttribute('aria-pressed', 'true');
   await expect(visible).toHaveCount(2);
+  await page.locator('.chip[data-filter="ui"]').click();
+  await expect(visible).toHaveCount(2);
+  await expect(visible.first()).toHaveAttribute('data-project', 'solorize');
   await page.locator('.chip[data-filter="game"]').click();
-  await expect(visible).toHaveCount(1);
-  await expect(visible.first()).toHaveAttribute('data-project', 'murder-mystery');
+  await expect(visible).toHaveCount(2);
   await page.locator('.chip[data-filter="all"]').click();
-  await expect(visible).toHaveCount(6);
+  await expect(visible).toHaveCount(8);
 });
 
 test('works cards link to the right pages', async ({ page }) => {
@@ -178,7 +180,7 @@ test('works cards link to the right pages', async ({ page }) => {
   await expect(page.locator('.work[data-project="swan"] .work__ext')).toHaveAttribute('href', 'https://www.artstation.com/artwork/AoQdyW');
   await expect(page.locator('.work[data-project="meta-quest"] .work__ext')).toHaveAttribute('href', 'https://www.youtube.com/watch?v=miQX34ESRho');
   await expect(page.locator('.work[data-project="murder-mystery"] .work__ext')).toHaveAttribute('href', 'https://www.youtube.com/watch?v=wQ2zmSk6-lI');
-  await expect(page.locator('.work').first()).toHaveAttribute('data-project', 'murder-mystery');
+  await expect(page.locator('.work').first()).toHaveAttribute('data-project', 'solorize');
 });
 
 test('keyboard arrows move between tabs', async ({ page, isMobile }) => {
@@ -332,8 +334,9 @@ test('analytics record section views and key clicks when switched on', async ({ 
 test('resume tab shows experience and offers PDF and DOCX downloads', async ({ page }) => {
   await page.goto('/#resume');
   await expect(page.locator('#resume')).toBeVisible();
-  await expect(page.locator('#resume .tl')).toHaveCount(5);
-  await expect(page.locator('#resume .tl').first()).toContainText('Giant Media');
+  await expect(page.locator('#resume .tl')).toHaveCount(6);
+  await expect(page.locator('#resume .tl').first()).toContainText('The Tiebreakers Club');
+  await expect(page.locator('#resume .tl').nth(1)).toContainText('Giant Media');
   await expect(page.locator('#resume')).toContainText('HD Trade Platform');
   await expect(page.locator('#resume')).toContainText('Cimpress');
   await expect(page.locator('#resume .edu')).toHaveCount(3);
@@ -386,4 +389,28 @@ test('her feet stay on the podium at common desktop window sizes', async ({ brow
     expect(feet, `${width}x${height} feet visible`).toBeLessThanOrEqual(height);
     await context.close();
   }
+});
+
+test('profile button says View Projects and Works ends with Hire Me', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#profile .cta')).toContainText('View Projects');
+  await page.locator('#profile .cta').click();
+  await expect(page.locator('#works')).toBeVisible();
+  const hire = page.locator('#works .cta--hire');
+  await hire.scrollIntoViewIfNeeded();
+  await expect(hire).toContainText('Hire Me');
+  await hire.click();
+  await expect(page.locator('#contact')).toBeVisible();
+});
+
+test('UI projects open with their screens', async ({ page }) => {
+  await page.goto('/#works');
+  await page.locator('.work[data-project="solorize"] .work__view').click();
+  await expect(page.locator('#viewerTitle')).toHaveText('Solorize');
+  await expect(page.locator('#viewerThumbs button')).toHaveCount(4);
+  await page.keyboard.press('Escape');
+  await page.locator('.work[data-project="ac-ui"] .work__view').click();
+  await expect(page.locator('#viewerMedia img')).toHaveAttribute('src', /acui-recreation/);
+  await page.locator('#viewerThumbs button').nth(1).click();
+  await expect(page.locator('#viewerMedia img')).toHaveAttribute('src', /acui-sheet/);
 });

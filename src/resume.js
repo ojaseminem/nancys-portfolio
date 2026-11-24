@@ -20,6 +20,22 @@ export const RESUME = {
 
   experience: [
     {
+      org: 'The Tiebreakers Club',
+      place: 'Pune',
+      role: 'Freelance Designer',
+      dates: 'Sep 2026 – Oct 2026',
+      projects: [
+        {
+          name: 'The Last Jewel of Peshwa (murder mystery game)',
+          points: [
+            'Designed and executed the complete visual graphics for a murder mystery game hosted by The Tiebreakers Club, a Pune-based gaming community.',
+            'Developed thematic illustrations and graphic assets to establish the mystery narrative and deepen the immersive gameplay.',
+            'Kept the game graphics and supporting materials visually consistent, creating one cohesive identity for the event.',
+          ],
+        },
+      ],
+    },
+    {
       org: 'Giant Media Pvt. Ltd.',
       place: 'Pune',
       role: 'Freelance Designer',
@@ -118,8 +134,8 @@ export const RESUME = {
 
   highlight: {
     name: 'The Last Jewel of Peshwa',
-    kind: 'Murder mystery board game · client work',
-    text: 'Designed a murder mystery board game for a client, from the case, clues and suspects to the visual design of the board, cards and printed components.',
+    kind: 'Murder mystery game · for The Tiebreakers Club',
+    text: 'Designed the complete visual graphics, thematic illustrations and game assets for a murder mystery game hosted by The Tiebreakers Club in Pune.',
     link: 'https://www.youtube.com/watch?v=wQ2zmSk6-lI',
   },
 

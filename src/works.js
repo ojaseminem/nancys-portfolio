@@ -9,12 +9,29 @@ const A = './assets/works/';
 
 export const PROJECTS = [
   {
+    id: 'solorize',
+    featured: true,
+    title: 'Solorize',
+    tag: 'UI/UX case study · Mobile app',
+    filters: ['ui'],
+    desc: 'A mobile app for planning and monitoring home solar systems. Designed the full flow in Figma: sign-in and OTP, a live energy dashboard, a system-size estimator, usage statistics, notifications, battery settings and service booking.',
+    cover: `${A}solorize-cover.webp`,
+    hover: `${A}solorize-screens.webp`,
+    link: { href: 'https://www.behance.net/rajnandchavan1', label: 'More on Behance', icon: 'behance' },
+    media: [
+      { type: 'image', src: `${A}solorize-cover.webp`, alt: 'Four Solorize app screens: login, home dashboard, system estimator and statistics.', caption: 'Solorize. Dark interface with a lime accent for energy and action.' },
+      { type: 'image', src: `${A}solorize-screens.webp`, alt: 'Key Solorize screens shown at full length.', caption: 'Key screens at full length: login, dashboard, design my system, weekly statistics.' },
+      { type: 'image', src: `${A}solorize-home.webp`, alt: 'Solorize home dashboard with weather, panel count, status and an energy production gauge.', caption: 'Home dashboard. Live production gauge with status, capacity and daily cost at a glance.' },
+      { type: 'image', src: `${A}solorize-login.webp`, alt: 'Solorize login screen with email and password fields.', caption: 'Sign-in. Clear hierarchy and one primary action.' },
+    ],
+  },
+  {
     id: 'murder-mystery',
     featured: true,
     title: 'The Last Jewel of Peshwa',
-    tag: 'Client work · Murder mystery board game',
+    tag: 'Client work · The Tiebreakers Club',
     filters: ['game', '2d'],
-    desc: 'A murder mystery board game designed for a client: the case, its clues and suspects, and the visual design of the board, cards and printed components. Watch the project film.',
+    desc: 'A murder mystery game for The Tiebreakers Club, a Pune gaming community. Designed the complete visual graphics, thematic illustrations and game assets that carry the mystery, with one cohesive identity across the event.',
     cover: `${A}mystery-cover.webp`,
     link: { href: 'https://www.youtube.com/watch?v=wQ2zmSk6-lI', label: 'Watch on YouTube', icon: 'youtube' },
     media: [
@@ -53,6 +70,20 @@ export const PROJECTS = [
       { type: 'image', src: `${A}ursula-sculpt.webp`, alt: 'Grey sculpt of Ursula: four face angles and a full-body T-pose.', caption: 'Sculpt. Face and expression studies with the full body blocked out in T-pose.' },
       { type: 'image', src: `${A}ursula-topology.webp`, alt: 'Wireframe views of the posed Ursula model and close-ups of the face topology.', caption: 'Topology. Retopologised mesh with clean edge flow around the face, hands and tentacles.' },
       { type: 'image', src: `${A}ursula-throne.webp`, alt: 'Shell throne shown as a wireframe model and as the final textured, glowing asset.', caption: 'Shell throne. Low-poly model and the hand-painted, glowing final.' },
+    ],
+  },
+  {
+    id: 'ac-ui',
+    title: "Assassin's Creed Odyssey UI Study",
+    tag: 'Game UI · Recreation study',
+    filters: ['ui', 'game'],
+    desc: 'The Odyssey inventory screen rebuilt in Figma as modular components: navigation tabs, resource bar, rarity item slots, alert and level badges, stat blocks and key prompts.',
+    cover: `${A}acui-thumb.webp`,
+    hover: `${A}acui-process-thumb.webp`,
+    link: { href: 'https://www.behance.net/rajnandchavan1', label: 'More on Behance', icon: 'behance' },
+    media: [
+      { type: 'image', src: `${A}acui-recreation.webp`, alt: 'Recreated Assassin\'s Creed Odyssey inventory screen with Kassandra, gear slots and stats.', caption: 'Recreation. The full inventory screen rebuilt in Figma.' },
+      { type: 'image', src: `${A}acui-sheet.webp`, alt: 'UI kit sheet of the recreated components: tabs, resources, item slots, badges, stats and prompts.', caption: 'UI kit. Every element split into a reusable component.' },
     ],
   },
   {
@@ -100,6 +131,7 @@ export const PROJECTS = [
 
 export const FILTERS = [
   { id: 'all', label: 'All' },
+  { id: 'ui', label: 'UI/UX' },
   { id: '3d', label: '3D' },
   { id: 'game', label: 'Game' },
   { id: 'motion', label: 'Motion' },

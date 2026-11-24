@@ -219,6 +219,85 @@ def works():
     thumb(stage, ((gw - tw2) // 2, 0, (gw + tw2) // 2, gh), "swan-process")
 
 
+def rounded(img, radius):
+    """Return img with rounded corners (RGBA)."""
+    from PIL import ImageDraw
+    m = Image.new("L", img.size, 0)
+    ImageDraw.Draw(m).rounded_rectangle((0, 0, img.width - 1, img.height - 1), radius=radius, fill=255)
+    out = img.convert("RGBA")
+    out.putalpha(m)
+    return out
+
+
+def ui_projects():
+    """SOLORIZE mobile app + AC Odyssey UI study, from screens exported out of her Figma file."""
+    from PIL import ImageDraw, ImageFilter
+    W = SRC / "works"
+    shots = [Image.open(W / "solorize" / f).convert("RGB") for f in
+             ("01-login.png", "02-home.png", "03-design-my-system.png", "04-statistics.png")]
+
+    def phone(img, h):
+        # crop long screens to one phone viewport (375 x 812), then scale to height h
+        vw = img.width
+        vh = round(vw * 812 / 375)
+        top = img.crop((0, 0, vw, min(vh, img.height)))
+        top = top.resize((round(h * 375 / 812), h), Image.LANCZOS)
+        return rounded(top, round(h * 0.06))
+
+    def backdrop(w, h):
+        a = np.zeros((h, w, 3), np.float32)
+        yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+        d = np.sqrt(((xx - w * .5) / (w * .55)) ** 2 + ((yy - h * .55) / (h * .7)) ** 2)
+        base = np.array([13, 15, 12], np.float32)
+        lime = np.array([120, 160, 30], np.float32)
+        a[:] = base + lime * np.clip(1 - d, 0, 1)[..., None] ** 2 * .35
+        return Image.fromarray(a.astype(np.uint8))
+
+    # cover: four phones fanned in a row
+    cw, ch = 1600, 900
+    cover = backdrop(cw, ch).convert("RGBA")
+    ph = 640
+    phones = [phone(im, ph) for im in shots]
+    gap = 48
+    total = sum(p.width for p in phones) + gap * (len(phones) - 1)
+    x = (cw - total) // 2
+    for i, p in enumerate(phones):
+        y = (ch - ph) // 2 + (0 if i in (1, 2) else 40)
+        shadow = Image.new("RGBA", (p.width + 80, p.height + 80), (0, 0, 0, 0))
+        ImageDraw.Draw(shadow).rounded_rectangle((40, 50, p.width + 40, p.height + 40), radius=40, fill=(0, 0, 0, 170))
+        cover.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(22)), (x - 40, y - 40))
+        cover.alpha_composite(p, (x, y))
+        x += p.width + gap
+    save_webp(cover.convert("RGB"), "works/solorize-cover.webp", 86)
+
+    # key screens at full length, side by side
+    H = 700
+    pad, gap = 70, 56
+    full = [rounded(im.resize((round(im.width * H / im.height), H), Image.LANCZOS), 18) for im in shots]
+    sw = sum(f.width for f in full) + gap * (len(full) - 1) + pad * 2
+    sheet = backdrop(sw, H + pad * 2).convert("RGBA")
+    x = pad
+    for f in full:
+        sheet.alpha_composite(f, (x, pad))
+        x += f.width + gap
+    save_webp(sheet.convert("RGB"), "works/solorize-screens.webp", 88)
+    for i, name in ((1, "home"), (0, "login")):
+        save_webp(shots[i], f"works/solorize-{name}.webp", 90)
+
+    # AC Odyssey UI study
+    rec = Image.open(W / "ac-ui" / "recreation.png").convert("RGB")
+    save_webp(rec, "works/acui-recreation.webp", 88)
+    sheet = Image.open(W / "ac-ui" / "ui-sheet.png").convert("RGB")
+    save_webp(sheet, "works/acui-sheet.webp", 88)
+    rw, rh = rec.size
+    tw = int(rh * 0.6)
+    t = rec.crop(((rw - tw) // 2, 0, (rw + tw) // 2, rh)).resize((300, 500), Image.LANCZOS)
+    save_webp(t, "works/acui-thumb.webp", 84)
+    sw2, sh2 = sheet.size  # inventory slot rows, framed portrait for the hover state
+    t2 = sheet.crop((40, 370, 40 + 420, 370 + 700)).resize((300, 500), Image.LANCZOS)
+    save_webp(t2, "works/acui-process-thumb.webp", 84)
+
+
 if __name__ == "__main__":
     print("building assets ->", OUT.relative_to(ROOT))
     background()
@@ -226,3 +305,4 @@ if __name__ == "__main__":
     podium(light)
     character()
     works()
+    ui_projects()
