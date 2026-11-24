@@ -17,7 +17,7 @@ The portfolio of Rajnandini Chavan, a UI/UX designer and 2D/3D generalist based 
 
 | Section | What's in it |
 | --- | --- |
-| **Profile** | Name, role, availability, a short two-paragraph introduction, discipline, what she is looking for and where she is open to work |
+| **Profile** | Name, role, availability, a short two-paragraph introduction, discipline and where she is open to work |
 | **Works** | Six projects: The Last Jewel of Peshwa (murder mystery board game, client work) and Meta Quest 3 Campaign (featured, with YouTube films), Ursula, Blossom Lamp (animation), Swan & Lotus Relief and Vaishnavi. Filters for 3D, Game, Motion and 2D. Cards preview the process or play the animation on hover, and each opens a full-screen viewer with images, videos and a link to the project page |
 | **Skills** | UI/UX and visual skills, art skills, and craft strengths |
 | **Resume** | Professional summary, full work experience as a timeline, toolkit, and one-click downloads of the resume as PDF and Word (DOCX) |
